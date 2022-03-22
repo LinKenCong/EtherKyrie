@@ -20,8 +20,10 @@ contract KyrieEther is ERC20 {
         address playerAddress;
         string name;
         uint256 createdTime;
+        Level playerLevel;
     }
 
+    Player[] public playersInGame;
     mapping(address => Player) public players;
 
     constructor() ERC20("ZKCoin", "KC") {
@@ -31,13 +33,13 @@ contract KyrieEther is ERC20 {
 
     function addPlayer() private {}
 
-    function getPlayer() view public {}
+    function getPlayer() public view {}
 
-    function getPlayerLevel() view private {}
+    function getPlayerLevel() private view {}
 
     function changePlayerLevel() private {}
 
-    function joinGame() private {}
+    function joinGame() public {}
 
     function winner() private {}
 }
