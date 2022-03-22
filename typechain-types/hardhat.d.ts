@@ -28,30 +28,6 @@ declare module "hardhat/types/runtime" {
       name: "KyrieEther",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.KyrieEther__factory>;
-    getContractFactory(
-      name: "Owned",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Owned__factory>;
-    getContractFactory(
-      name: "SafeMath",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SafeMath__factory>;
-    getContractFactory(
-      name: "IERC20",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IERC20__factory>;
-    getContractFactory(
-      name: "Owned",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Owned__factory>;
-    getContractFactory(
-      name: "SafeMath",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SafeMath__factory>;
-    getContractFactory(
-      name: "ZKCoin",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ZKCoin__factory>;
 
     getContractAt(
       name: "ERC20",
@@ -73,36 +49,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.KyrieEther>;
-    getContractAt(
-      name: "Owned",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Owned>;
-    getContractAt(
-      name: "SafeMath",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.SafeMath>;
-    getContractAt(
-      name: "IERC20",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IERC20>;
-    getContractAt(
-      name: "Owned",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Owned>;
-    getContractAt(
-      name: "SafeMath",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.SafeMath>;
-    getContractAt(
-      name: "ZKCoin",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ZKCoin>;
 
     // default types
     getContractFactory(

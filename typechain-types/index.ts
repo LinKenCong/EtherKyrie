@@ -5,14 +5,8 @@ export type { ERC20 } from "./ERC20";
 export type { IERC20Metadata } from "./IERC20Metadata";
 export type { IERC20 } from "./IERC20";
 export type { KyrieEther } from "./KyrieEther";
-export type { Owned } from "./Owned";
-export type { SafeMath } from "./SafeMath";
-export type { ZKCoin } from "./ZKCoin";
 
 export { ERC20__factory } from "./factories/ERC20__factory";
 export { IERC20Metadata__factory } from "./factories/IERC20Metadata__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
 export { KyrieEther__factory } from "./factories/KyrieEther__factory";
-export { Owned__factory } from "./factories/Owned__factory";
-export { SafeMath__factory } from "./factories/SafeMath__factory";
-export { ZKCoin__factory } from "./factories/ZKCoin__factory";
