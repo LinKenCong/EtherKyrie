@@ -96,6 +96,10 @@ contract Voting {
         state = State.Voting;
     }
 
+    function getTotalVoter() public view returns (uint256) {
+        return totalVoter;
+    }
+
     function doVote(bool _choice)
         public
         inState(State.Voting)
