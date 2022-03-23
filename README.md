@@ -23,10 +23,16 @@ npx solhint 'contracts/**/*.sol' --fix
 
 ```shell
 hardhat run --network ropsten scripts/deploy.ts
+npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
 ```
 
 ```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
+yarn hardhat clean
+yarn hardhat clear-abi
+yarn hardhat node
+yarn hardhat compile
+yarn hardhat run --network localhost scripts/deploy.ts
+yarn hardhat test
 ```
 
 ## Hardhat ABI Exporter

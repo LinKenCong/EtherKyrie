@@ -4,6 +4,7 @@ coverage
 coverage.json
 typechain
 typechain-types
+contract_abi
 
 #Hardhat files
 cache
