@@ -6,6 +6,7 @@ import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
+import "hardhat-abi-exporter";
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
-const config: HardhatUserConfig = {
+const config = {
   solidity: "0.8.4",
   networks: {
     ropsten: {
@@ -38,6 +39,15 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
   },
+  abiExporter: {
+    path: './contract_abi',
+    runOnCompile: true,
+    clear: true,
+    flat: true,
+    only: [],
+    spacing: 2,
+    pretty: true,
+  }
 };
 
 export default config;

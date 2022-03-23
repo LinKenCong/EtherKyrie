@@ -1,5 +1,7 @@
 # EtherKyrie
 
+## Hardhat
+
 ```shell
 npx hardhat accounts
 npx hardhat compile
@@ -25,4 +27,12 @@ hardhat run --network ropsten scripts/deploy.ts
 
 ```shell
 npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
+```
+
+## Hardhat ABI Exporter
+
+```shell
+yarn hardhat export-abi
+yarn hardhat clear-abi
+yarn hardhat export-abi --no-compile
 ```

@@ -4,8 +4,9 @@ pragma solidity ^0.8.0;
 // import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 // import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./Voting.sol";
 
-contract KyrieEther is ERC20 {
+contract KyrieEther is ERC20, Voting {
     uint256 public playerCount = 0;
 
     enum Level {
@@ -26,20 +27,23 @@ contract KyrieEther is ERC20 {
     Player[] public playersInGame;
     mapping(address => Player) public players;
 
-    constructor() ERC20("ZKCoin", "KC") {
+    constructor()
+        ERC20("ZKCoin", "KC")
+        Voting("ballotOfficialName", "proposal")
+    {
         // 初始为合约创建者铸造货币
         _mint(msg.sender, 100 * 10**uint256(decimals()));
     }
 
-    function addPlayer() private {}
+    // function addPlayer() private {}
 
-    function getPlayer() public view {}
+    // function getPlayer() public view {}
 
-    function getPlayerLevel() private view {}
+    // function getPlayerLevel() private view {}
 
-    function changePlayerLevel() private {}
+    // function changePlayerLevel() private {}
 
-    function joinGame() public {}
+    // function joinGame() public {}
 
-    function winner() private {}
+    // function winner() private {}
 }

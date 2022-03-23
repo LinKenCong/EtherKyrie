@@ -14,13 +14,13 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const ZKCoin = await ethers.getContractFactory("ZKCoin");
-  const zkcoin = await ZKCoin.deploy();
+  const ContractFactory = await ethers.getContractFactory("KyrieEther");
+  const DevContract = await ContractFactory.deploy();
 
-  await zkcoin.deployed();
+  await DevContract.deployed();
 
-  console.log("-->ZKCoin deployed to:", zkcoin.address);
-  console.log("-->ZKCoin:", zkcoin);
+  console.log("Contract deployed to-->", DevContract.address);
+  // console.log("Contract-->", DevContract);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
