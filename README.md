@@ -1,6 +1,19 @@
 # EtherKyrie
 
-## Hardhat
+## Run Project
+
+清理-运行hardhat节点网络-部署-测试
+
+```shell
+yarn hardhat clean
+yarn hardhat clear-abi
+yarn hardhat node
+yarn hardhat compile
+yarn hardhat run --network localhost scripts/deploy.ts
+yarn hardhat test
+```
+
+## Hardhat Use
 
 ```shell
 npx hardhat accounts
@@ -19,20 +32,9 @@ npx prettier '**/*.{json,sol,md}' --check
 npx prettier '**/*.{json,sol,md}' --write
 npx solhint 'contracts/**/*.sol'
 npx solhint 'contracts/**/*.sol' --fix
-```
 
-```shell
 hardhat run --network ropsten scripts/deploy.ts
 npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
-```
-
-```shell
-yarn hardhat clean
-yarn hardhat clear-abi
-yarn hardhat node
-yarn hardhat compile
-yarn hardhat run --network localhost scripts/deploy.ts
-yarn hardhat test
 ```
 
 ## Hardhat ABI Exporter
