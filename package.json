@@ -15,12 +15,13 @@
 	},
   "homepage": "https://github.com/LinKenCong/EtherKyrie",
   "scripts": {
-    "f": "cd ./frontend && yarn next dev",
-    "hh": "cd ./hardhat && yarn hardhat node",
-    "hh compile": "cd ./hardhat && yarn hardhat compile",
-    "hh dev l": "cd ./hardhat && yarn hardhat run --network localhost scripts/deploy.ts",
-    "hh clear": "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi",
-    "hh test": "cd ./hardhat && yarn hardhat test"
+    "i": "cd ./frontend && yarn add && cd .. && cd ./hardhat && npm i && cd ..",
+    "f": "cd ./frontend && yarn next dev && cd ..",
+    "hh": "cd ./hardhat && yarn hardhat node && cd ..",
+    "hh-compile": "cd ./hardhat && yarn hardhat compile && cd ..",
+    "hh-dev-l": "cd ./hardhat && yarn hardhat run --network localhost scripts/deploy.ts && cd ..",
+    "hh-clear": "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi && cd ..",
+    "hh-test": "cd ./hardhat && yarn hardhat test && cd .."
   },
   "keywords": [
 		"ethers",
