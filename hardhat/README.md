@@ -1,6 +1,4 @@
-# EtherKyrie
-
-## Run Project
+# Run Project
 
 清理-运行hardhat节点网络-部署-测试
 
