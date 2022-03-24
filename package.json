@@ -1,5 +1,5 @@
 {
-  "name": "mydapp",
+  "name": "etherkyrie",
   "version": "1.0.0",
   "description": "EtherKyrie",
   "main": "index.js",
@@ -15,12 +15,12 @@
 	},
   "homepage": "https://github.com/LinKenCong/EtherKyrie",
   "scripts": {
-    "frontend": "cd ./frontend && yarn next dev",
-    "hardhat": "cd ./hardhat && yarn hardhat node",
-    "hardhat compile": "cd ./hardhat && yarn hardhat compile",
-    "hardhat dev": "cd ./hardhat && yarn hardhat run --network localhost scripts/deploy.ts",
-    "hardhat clear": "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi",
-    "hardhat test": "cd ./hardhat && yarn hardhat test"
+    "f": "cd ./frontend && yarn next dev",
+    "hh": "cd ./hardhat && yarn hardhat node",
+    "hh compile": "cd ./hardhat && yarn hardhat compile",
+    "hh dev l": "cd ./hardhat && yarn hardhat run --network localhost scripts/deploy.ts",
+    "hh clear": "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi",
+    "hh test": "cd ./hardhat && yarn hardhat test"
   },
   "keywords": [
 		"ethers",

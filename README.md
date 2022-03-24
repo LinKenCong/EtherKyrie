@@ -2,45 +2,19 @@
 
 ## Run Project
 
-清理-运行hardhat节点网络-部署-测试
+运行命令启动前端 如：
 
 ```shell
-yarn hardhat clean
-yarn hardhat clear-abi
-yarn hardhat node
-yarn hardhat compile
-yarn hardhat run --network localhost scripts/deploy.ts
-yarn hardhat test
+yarn f
 ```
 
-## Hardhat Use
+所有命令及作用：
 
 ```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-npx hardhat help
-REPORT_GAS=true npx hardhat test
-npx hardhat coverage
-npx hardhat run scripts/deploy.ts
-TS_NODE_FILES=true npx ts-node scripts/deploy.ts
-npx eslint '**/*.{js,ts}'
-npx eslint '**/*.{js,ts}' --fix
-npx prettier '**/*.{json,sol,md}' --check
-npx prettier '**/*.{json,sol,md}' --write
-npx solhint 'contracts/**/*.sol'
-npx solhint 'contracts/**/*.sol' --fix
-
-hardhat run --network ropsten scripts/deploy.ts
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
-```
-
-## Hardhat ABI Exporter
-
-```shell
-yarn hardhat export-abi
-yarn hardhat clear-abi
-yarn hardhat export-abi --no-compile
+yarn f: "cd ./frontend && yarn next dev",
+yarn hh: "cd ./hardhat && yarn hardhat node",
+yarn hh compile: "cd ./hardhat && yarn hardhat compile",
+yarn hh dev l: "cd ./hardhat && yarn hardhat run --network localhost scripts/deploy.ts",
+yarn hh clear: "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi",
+yarn hh test: "cd ./hardhat && yarn hardhat test"
 ```
