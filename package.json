@@ -1,23 +1,32 @@
 {
-  "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.5",
-    "@nomiclabs/hardhat-etherscan": "^3.0.3",
-    "@nomiclabs/hardhat-waffle": "^2.0.3",
-    "@openzeppelin/contracts": "^4.5.0",
-    "@typechain/ethers-v5": "^9.0.0",
-    "@typechain/hardhat": "^5.0.0",
-    "@types/mocha": "^9.1.0",
-    "chai": "^4.3.6",
-    "dotenv": "^16.0.0",
-    "ethers": "^5.6.0",
-    "hardhat": "^2.9.1",
-    "hardhat-abi-exporter": "^2.8.0",
-    "hardhat-gas-reporter": "^1.0.8",
-    "solidity-coverage": "^0.7.20",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.2"
+  "name": "mydapp",
+  "version": "1.0.0",
+  "description": "EtherKyrie",
+  "main": "index.js",
+  "author": "Kyrie",
+  "license": "MIT",
+  "repository": {
+		"name": "LinKenCong/EtherKyrie",
+		"type": "git",
+		"url": "https://github.com/LinKenCong/EtherKyrie.git"
+	},
+  "bugs": {
+		"url": "https://github.com/LinKenCong/EtherKyrie/issues"
+	},
+  "homepage": "https://github.com/LinKenCong/EtherKyrie",
+  "scripts": {
+    "frontend": "cd ./frontend && yarn next dev",
+    "hardhat": "cd ./hardhat && yarn hardhat node",
+    "hardhat compile": "cd ./hardhat && yarn hardhat compile",
+    "hardhat dev": "cd ./hardhat && yarn hardhat run --network localhost scripts/deploy.ts",
+    "hardhat clear": "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi",
+    "hardhat test": "cd ./hardhat && yarn hardhat test"
   },
-  "dependencies": {
-    "typechain": "^7.0.1"
-  }
+  "keywords": [
+		"ethers",
+		"ethereum",
+		"react",
+		"typescript",
+		"hardhat"
+	]
 }

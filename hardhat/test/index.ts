@@ -1,10 +1,10 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
-import { Contract, ContractFactory } from "ethers";
+import { Contract } from "ethers";
 import { ethers } from "hardhat";
 import fs from "fs";
 
-describe("Test", function () {
+describe("测试脚本 test/index.ts ", function () {
   // 参数
   const DEV_DATA = {
     "deploy_net": "http://localhost:8545",
