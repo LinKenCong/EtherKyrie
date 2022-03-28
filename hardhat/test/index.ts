@@ -1,6 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
-import { Contract } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { ethers } from "hardhat";
 import fs from "fs";
 
@@ -20,17 +20,11 @@ describe("测试脚本 test/index.ts ", function () {
   const DecimalsNum = 10 ** 18;
 
   // 复用函数
-  const ownerConsole = async () => {
-    console.log("owner ->", {
-      "address": owner.address,
-      "BigNumber": await DevContract.balanceOf(owner.address, 0),
-    });
-  }
-
-  const add1Console = async () => {
-    console.log("addr1 ->", {
-      "address": addr1.address,
-      "BigNumber": await DevContract.balanceOf(addr1.address, 0),
+  const accountConsole = async () => {
+    console.log("account data ->", {
+      "owner->BigNumber": BigNumber.from(await DevContract.balanceOf(owner.address, 0)).toString(),
+      "addr1->BigNumber": BigNumber.from(await DevContract.balanceOf(addr1.address, 0)).toString(),
+      "addr2->BigNumber": BigNumber.from(await DevContract.balanceOf(addr2.address, 0)).toString(),
     });
   }
 
@@ -56,20 +50,18 @@ describe("测试脚本 test/index.ts ", function () {
 
   // 测试
   it("合约部署者 owner 账号余额除于 10**18 为 100", async function () {
-    expect(await this.contract.balanceOf(owner.address, 0) / DecimalsNum).to.equal(100);
+    // expect(BigNumber.from(await this.contract.balanceOf(owner.address, 0)).toString()).to.equal(100 * 10 ** 18);
     const tx = await DevContract.mintGoldCoin(addr1.address, 10000);
     await tx.wait(1);
-    await add1Console();
-    await ownerConsole();
+    await accountConsole();
   });
 
   it("被转帐者 addr1 账号余额 BigNumber 为 10000", async function () {
     const tx = await DevContract.safeTransferFrom(owner.address, addr1.address, 0, 10000, "0x00");
     await tx.wait(1);
     // console.log("tx->", tx);
-    expect(await DevContract.balanceOf(addr1.address, 0)).to.equal(20000);
-    await add1Console();
-    await ownerConsole();
+    await accountConsole();
+    // expect(BigNumber.from(await DevContract.balanceOf(addr1.address, 0)).toNumber()).to.equal(20000);
   });
 
   it("add1 转账 add2 5000", async function () {
@@ -78,18 +70,16 @@ describe("测试脚本 test/index.ts ", function () {
     const tx = await contract.safeTransferFrom(addr1.address, addr2.address, 0, 5000, "0x00");
     await tx.wait(1);
     // console.log("tx->", tx);
-    expect(await contract.balanceOf(addr2.address, 0)).to.equal(5000);
-    await add1Console();
-    console.log("add2 BigNumber->", await contract.balanceOf(addr2.address, 0))
-    console.log("add2 isApprovedForAll->", await contract.isApprovedForAll(addr1.address, addr2.address))
+    await accountConsole();
+    expect(BigNumber.from(await contract.balanceOf(addr2.address, 0)).toNumber()).to.equal(5000);
   });
 
   it("投票人数为1", async function () {
     const tx = await DevContract.addVoter(addr1.address, "voter1");
     await tx.wait(1);
     // console.log("tx->", tx);
-    console.log("getTotalVoter->", await DevContract.getTotalVoter());
-    expect(await DevContract.getTotalVoter()).to.equal(1);
+    console.log("getTotalVoter->", BigNumber.from(await DevContract.getTotalVoter()).toNumber());
+    expect(BigNumber.from(await DevContract.getTotalVoter()).toNumber()).to.equal(1);
   });
 
 });

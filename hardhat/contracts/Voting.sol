@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract Voting {
+contract Voting is Initializable {
     // VARIABLES 变量声明
     // 结构 投票
     struct Vote {
@@ -68,7 +69,10 @@ contract Voting {
 
     // EVENTS 监听器
     // FUNCTIONS 方法函数
-    constructor(string memory _ballotOfficialName, string memory _proposal) {
+    function __Voting_init(
+        string memory _ballotOfficialName,
+        string memory _proposal
+    ) internal onlyInitializing {
         ballotOfficialAddress = msg.sender;
         ballotOfficialName = _ballotOfficialName;
         proposal = _proposal;

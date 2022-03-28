@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "./Voting.sol";
 
@@ -24,7 +24,9 @@ contract PlayersContract is Voting {
     Player[] public playersInGame;
     mapping(address => Player) public players;
 
-    constructor() Voting("ballotOfficialName", "proposal") {}
+    function __PlayersContract_init() internal onlyInitializing {
+        __Voting_init("ballotOfficialName", "proposal");
+    }
 
     // function addPlayer() private {}
 

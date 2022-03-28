@@ -18,6 +18,7 @@ async function main() {
   const DevContract = await ContractFactory.deploy();
 
   await DevContract.deployed();
+  await DevContract.initializeContract();
 
   console.log("Contract deployed to-->", DevContract.address);
   // console.log("Contract-->", DevContract);
