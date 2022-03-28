@@ -11,7 +11,7 @@ npm run f
 所有命令及作用：
 
 ```shell
-yarn i: "cd ./frontend && yarn add && cd .. && cd ./hardhat && npm i && cd ..",
+yarn i-all: "cd ./frontend && yarn install && cd .. && cd ./hardhat && npm i && cd ..",
 yarn f: "cd ./frontend && yarn next dev && cd ..",
 yarn hh: "cd ./hardhat && yarn hardhat node && cd ..",
 yarn hh-compile: "cd ./hardhat && yarn hardhat compile && cd ..",
