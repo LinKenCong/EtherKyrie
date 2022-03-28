@@ -6,13 +6,13 @@
   "author": "Kyrie",
   "license": "MIT",
   "repository": {
-		"name": "LinKenCong/EtherKyrie",
-		"type": "git",
-		"url": "https://github.com/LinKenCong/EtherKyrie.git"
-	},
+    "name": "LinKenCong/EtherKyrie",
+    "type": "git",
+    "url": "https://github.com/LinKenCong/EtherKyrie.git"
+  },
   "bugs": {
-		"url": "https://github.com/LinKenCong/EtherKyrie/issues"
-	},
+    "url": "https://github.com/LinKenCong/EtherKyrie/issues"
+  },
   "homepage": "https://github.com/LinKenCong/EtherKyrie",
   "scripts": {
     "i-all": "cd ./frontend && yarn install && cd .. && cd ./hardhat && npm i && cd ..",
@@ -21,13 +21,14 @@
     "hh-compile": "cd ./hardhat && yarn hardhat compile && cd ..",
     "hh-dev-l": "cd ./hardhat && yarn hardhat run --network localhost scripts/deploy.ts && cd ..",
     "hh-clear": "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi && cd ..",
-    "hh-test": "cd ./hardhat && yarn hardhat test && cd .."
+    "hh-test": "cd ./hardhat && yarn hardhat test && cd ..",
+    "hh-dev": "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi && yarn hardhat compile && yarn hardhat run --network localhost scripts/deploy.ts && cd .."
   },
   "keywords": [
-		"ethers",
-		"ethereum",
-		"react",
-		"typescript",
-		"hardhat"
-	]
+    "ethers",
+    "ethereum",
+    "react",
+    "typescript",
+    "hardhat"
+  ]
 }

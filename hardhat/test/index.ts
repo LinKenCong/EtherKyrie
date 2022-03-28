@@ -57,6 +57,9 @@ describe("测试脚本 test/index.ts ", function () {
   // 测试
   it("合约部署者 owner 账号余额除于 10**18 为 100", async function () {
     expect(await this.contract.balanceOf(owner.address, 0) / DecimalsNum).to.equal(100);
+    const tx = await DevContract.mintGoldCoin(addr1.address, 10000);
+    await tx.wait(1);
+    await add1Console();
     await ownerConsole();
   });
 
@@ -64,21 +67,22 @@ describe("测试脚本 test/index.ts ", function () {
     const tx = await DevContract.safeTransferFrom(owner.address, addr1.address, 0, 10000, "0x00");
     await tx.wait(1);
     // console.log("tx->", tx);
-    expect(await DevContract.balanceOf(addr1.address, 0)).to.equal(10000);
+    expect(await DevContract.balanceOf(addr1.address, 0)).to.equal(20000);
     await add1Console();
     await ownerConsole();
   });
 
-  // it("add1 转账 add2 5000", async function () {
-  //   const wallet = new ethers.Wallet(DEV_DATA.private_key_1, this.provider);
-  //   const contract = new ethers.Contract(this.contractAddress, this.contractAbi, wallet);
-  //   const tx = await contract.safeTransferFrom(owner.address, addr2.address, 0, 5000, "0x00");
-  //   await tx.wait(1);
-  //   // console.log("tx->", tx);
-  //   expect(await contract.balanceOf(addr2.address, 0)).to.equal(5000);
-  //   await add1Console();
-  //   console.log("add2 balance->", ethers.utils.formatUnits(await contract.balanceOf(addr2.address, 0), DecimalsNum))
-  // });
+  it("add1 转账 add2 5000", async function () {
+    const wallet = new ethers.Wallet(DEV_DATA.private_key_1, this.provider);
+    const contract = new ethers.Contract(this.contractAddress, this.contractAbi, wallet);
+    const tx = await contract.safeTransferFrom(addr1.address, addr2.address, 0, 5000, "0x00");
+    await tx.wait(1);
+    // console.log("tx->", tx);
+    expect(await contract.balanceOf(addr2.address, 0)).to.equal(5000);
+    await add1Console();
+    console.log("add2 BigNumber->", await contract.balanceOf(addr2.address, 0))
+    console.log("add2 isApprovedForAll->", await contract.isApprovedForAll(addr1.address, addr2.address))
+  });
 
   it("投票人数为1", async function () {
     const tx = await DevContract.addVoter(addr1.address, "voter1");

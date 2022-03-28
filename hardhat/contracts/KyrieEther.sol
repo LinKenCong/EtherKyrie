@@ -16,4 +16,10 @@ contract KyrieEther is ERC1155, PlayersContract {
         // 初始为合约创建者铸造货币
         _mint(msg.sender, GOLD, 100 * 10**18, "");
     }
+
+    function mintGoldCoin(address to, uint256 amount) public {
+        require(to != address(0), "ERC1155: mint to the zero address");
+
+        _mint(to, GOLD, amount, "");
+    }
 }
