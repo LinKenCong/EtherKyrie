@@ -3,47 +3,17 @@ pragma solidity ^0.8.0;
 
 // import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 // import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "./Voting.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "./PlayersContract.sol";
 
-contract KyrieEther is ERC20, Voting {
-    uint256 public playerCount = 0;
-
-    enum Level {
-        Rookie,
-        Elementary,
-        Intermediate,
-        Advanced,
-        Master
-    }
-
-    struct Player {
-        address playerAddress;
-        string name;
-        uint256 createdTime;
-        Level playerLevel;
-    }
-
-    Player[] public playersInGame;
-    mapping(address => Player) public players;
+contract KyrieEther is ERC1155, PlayersContract {
+    uint256 public constant GOLD = 0;
 
     constructor()
-        ERC20("ZKCoin", "KC")
-        Voting("ballotOfficialName", "proposal")
+        ERC1155("https://api.frank.hk/api/nft/demo/1155/marvel/{id}.json")
+        PlayersContract()
     {
         // 初始为合约创建者铸造货币
-        _mint(msg.sender, 100 * 10**uint256(decimals()));
+        _mint(msg.sender, GOLD, 100 * 10**18, "");
     }
-
-    // function addPlayer() private {}
-
-    // function getPlayer() public view {}
-
-    // function getPlayerLevel() private view {}
-
-    // function changePlayerLevel() private {}
-
-    // function joinGame() public {}
-
-    // function winner() private {}
 }

@@ -23,16 +23,14 @@ describe("测试脚本 test/index.ts ", function () {
   const ownerConsole = async () => {
     console.log("owner ->", {
       "address": owner.address,
-      "BigNumber": await DevContract.balanceOf(owner.address),
-      "Balance": ethers.utils.formatUnits(await DevContract.balanceOf(owner.address), await DevContract.decimals()),
+      "BigNumber": await DevContract.balanceOf(owner.address, 0),
     });
   }
 
   const add1Console = async () => {
     console.log("addr1 ->", {
       "address": addr1.address,
-      "BigNumber": await DevContract.balanceOf(addr1.address),
-      "Balance": ethers.utils.formatUnits(await DevContract.balanceOf(addr1.address), await DevContract.decimals()),
+      "BigNumber": await DevContract.balanceOf(addr1.address, 0),
     });
   }
 
@@ -58,29 +56,29 @@ describe("测试脚本 test/index.ts ", function () {
 
   // 测试
   it("合约部署者 owner 账号余额除于 10**18 为 100", async function () {
-    expect(await this.contract.balanceOf(owner.address) / DecimalsNum).to.equal(100);
+    expect(await this.contract.balanceOf(owner.address, 0) / DecimalsNum).to.equal(100);
     await ownerConsole();
   });
 
   it("被转帐者 addr1 账号余额 BigNumber 为 10000", async function () {
-    const tx = await DevContract.transfer(addr1.address, 10000);
+    const tx = await DevContract.safeTransferFrom(owner.address, addr1.address, 0, 10000, "0x00");
     await tx.wait(1);
     // console.log("tx->", tx);
-    expect(await DevContract.balanceOf(addr1.address)).to.equal(10000);
+    expect(await DevContract.balanceOf(addr1.address, 0)).to.equal(10000);
     await add1Console();
     await ownerConsole();
   });
 
-  it("add1 转账 add2 5000", async function () {
-    const wallet = new ethers.Wallet(DEV_DATA.private_key_1, this.provider);
-    const contract = new ethers.Contract(this.contractAddress, this.contractAbi, wallet);
-    const tx = await contract.transfer(addr2.address, 5000);
-    await tx.wait(1);
-    // console.log("tx->", tx);
-    expect(await contract.balanceOf(addr2.address)).to.equal(5000);
-    await add1Console();
-    console.log("add2 balance->", ethers.utils.formatUnits(await contract.balanceOf(addr2.address), await contract.decimals()))
-  });
+  // it("add1 转账 add2 5000", async function () {
+  //   const wallet = new ethers.Wallet(DEV_DATA.private_key_1, this.provider);
+  //   const contract = new ethers.Contract(this.contractAddress, this.contractAbi, wallet);
+  //   const tx = await contract.safeTransferFrom(owner.address, addr2.address, 0, 5000, "0x00");
+  //   await tx.wait(1);
+  //   // console.log("tx->", tx);
+  //   expect(await contract.balanceOf(addr2.address, 0)).to.equal(5000);
+  //   await add1Console();
+  //   console.log("add2 balance->", ethers.utils.formatUnits(await contract.balanceOf(addr2.address, 0), DecimalsNum))
+  // });
 
   it("投票人数为1", async function () {
     const tx = await DevContract.addVoter(addr1.address, "voter1");
