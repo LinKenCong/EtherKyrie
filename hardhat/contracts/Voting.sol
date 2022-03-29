@@ -70,11 +70,28 @@ contract Voting is Initializable {
         _;
     }
 
+    modifier voteTrue() {
+        // 判断是否投过票
+        require(!voterRegister[msg.sender].voted, "you have already voted.");
+        _;
+    }
+
+    modifier voterTrue() {
+        // 判断是否有权限的投票者
+        require(
+            bytes(voterRegister[msg.sender].voterName).length != 0,
+            "You do not have permission."
+        );
+        _;
+    }
+
     // EVENTS 监听器
     // FUNCTIONS 方法函数
-    function __Voting_init(
-        string memory _ballotOfficialName
-    ) internal onlyInitializing {
+    function __Voting_init(string memory _ballotOfficialName)
+        internal
+        onlyInitializing
+    {
+        require(bytes(_ballotOfficialName).length != 0, "input is empty");
         ballotOfficialAddress = msg.sender;
         ballotOfficialName = _ballotOfficialName;
 
@@ -82,6 +99,7 @@ contract Voting is Initializable {
     }
 
     // constructor(string memory _ballotOfficialName) {
+    //     require(bytes(_ballotOfficialName).length != 0, "input is empty");
     //     ballotOfficialAddress = msg.sender;
     //     ballotOfficialName = _ballotOfficialName;
 
@@ -95,6 +113,7 @@ contract Voting is Initializable {
     {
         /// @notice 创建提案
         /// @dev 只有在投票未开始时 只有官方 可执行
+        require(bytes(_proposalName).length != 0, "input is empty");
         Proposal memory newProposal = Proposal(_proposalName);
         proposals.push(newProposal);
     }
@@ -106,6 +125,8 @@ contract Voting is Initializable {
     {
         /// @notice 创建选民
         /// @dev 只有在投票未开始时 只有官方 可执行
+        require(_voterAddress != address(0), "address is empty");
+        require(bytes(_voterName).length != 0, "input is empty");
         Voter memory v;
         v.voterName = _voterName;
         v.voted = false;
@@ -122,49 +143,54 @@ contract Voting is Initializable {
     function doVote(uint8 _proposalId)
         public
         inState(State.Voting)
+        voteTrue
+        voterTrue
         returns (bool voted)
     {
         /// @notice 投票
         /// @dev 只有在投票开始时执行
+        require(_proposalId >= 0, "input is empty");
         bool found = false;
 
-        if (
-            bytes(voterRegister[msg.sender].voterName).length != 0 &&
-            !voterRegister[msg.sender].voted
-        ) {
-            // 如果 选民名称不为空 和 选民未投过票
+        // 如果 选民名称不为空
+        // 更改状态为已投票
+        voterRegister[msg.sender].voted = true;
+        // 加入已被投票的提案
+        ProposalVote memory pv;
+        pv.voteAddress = msg.sender;
+        pv.voteId = _proposalId;
+        voterProposal[_proposalId].push(pv);
+        // 投票数量增加
+        countResult++;
+        // 投票人数增加
+        totalVote++;
+        found = true;
 
-            voterRegister[msg.sender].voted = true;
-            ProposalVote memory pv;
-            pv.voteAddress = msg.sender;
-            pv.voteId = _proposalId;
-            voterProposal[_proposalId].push(pv);
-            countResult++;
-            totalVote++;
-            found = true;
-        }
         return found;
     }
 
     function endVote() public inState(State.Voting) onlyOfficial {
         /// @notice 结束投票
         /// @dev 只有在投票结束后执行
+        // 状态为结束
         state = State.Ended;
+        // 最终投票数量显示
         finalResult = countResult;
         for (uint8 i = 0; i < proposals.length; i++) {
             if (winnerProposal.length == 0) {
+                // 如果没有赢家则加入
                 winnerProposal.push(i);
-            }
-            if (
+            } else if (
                 voterProposal[i].length <
                 voterProposal[winnerProposal[0]].length
             ) {
+                // 如果有更小的则变为最小的
                 winnerProposal = [i];
-            }
-            if (
+            } else if (
                 voterProposal[i].length ==
                 voterProposal[winnerProposal[0]].length
             ) {
+                // 如果有相同的则加入
                 winnerProposal.push(i);
             }
         }
