@@ -1,15 +1,17 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.7;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract Voting is Initializable {
     // VARIABLES 变量声明
-    // 结构 投票
-    struct Vote {
-        // 投票人 地址
-        address voterAddress;
-        // 投票人 选择
-        bool choice;
+    // 结构 提案
+    struct Proposal {
+        string proposalName;
+    }
+    // 结构 提案投票人
+    struct ProposalVote {
+        address voteAddress;
+        uint8 voteId;
     }
     // 结构 投票人
     struct Voter {
@@ -31,13 +33,14 @@ contract Voting is Initializable {
     // 投票的官方名称
     string public ballotOfficialName;
     // 提案
-    string public proposal;
+    Proposal[] public proposals;
 
-    // 映射 投票权
-    mapping(uint256 => Vote) private votes;
     // 映射 地址 选民
     mapping(address => Voter) public voterRegister;
-
+    // 映射 地址 提案id=>投票人
+    mapping(uint8 => ProposalVote[]) public voterProposal;
+    // 赢家
+    uint8[] public winnerProposal;
     // 创建枚举 状态{创建，投票，结束}
     enum State {
         Created,
@@ -50,34 +53,50 @@ contract Voting is Initializable {
     // MODIFIERS 修饰器
     modifier condition(bool _condition) {
         // 只有条件为真时
-        require(_condition, "modifier condition Error");
+        require(_condition);
         _;
     }
     modifier onlyOfficial() {
         // 只有官方
         require(
             msg.sender == ballotOfficialAddress,
-            "Only official can call this."
+            "Only official can call this function."
         );
         _;
     }
     modifier inState(State _state) {
         // 确认当前状态
-        require(state == _state, "modifier inState Error");
+        require(state == _state);
         _;
     }
 
     // EVENTS 监听器
     // FUNCTIONS 方法函数
     function __Voting_init(
-        string memory _ballotOfficialName,
-        string memory _proposal
+        string memory _ballotOfficialName
     ) internal onlyInitializing {
         ballotOfficialAddress = msg.sender;
         ballotOfficialName = _ballotOfficialName;
-        proposal = _proposal;
 
         state = State.Created;
+    }
+
+    // constructor(string memory _ballotOfficialName) {
+    //     ballotOfficialAddress = msg.sender;
+    //     ballotOfficialName = _ballotOfficialName;
+
+    //     state = State.Created;
+    // }
+
+    function addProposal(string memory _proposalName)
+        public
+        inState(State.Created)
+        onlyOfficial
+    {
+        /// @notice 创建提案
+        /// @dev 只有在投票未开始时 只有官方 可执行
+        Proposal memory newProposal = Proposal(_proposalName);
+        proposals.push(newProposal);
     }
 
     function addVoter(address _voterAddress, string memory _voterName)
@@ -100,11 +119,7 @@ contract Voting is Initializable {
         state = State.Voting;
     }
 
-    function getTotalVoter() public view returns (uint256) {
-        return totalVoter;
-    }
-
-    function doVote(bool _choice)
+    function doVote(uint8 _proposalId)
         public
         inState(State.Voting)
         returns (bool voted)
@@ -118,15 +133,13 @@ contract Voting is Initializable {
             !voterRegister[msg.sender].voted
         ) {
             // 如果 选民名称不为空 和 选民未投过票
+
             voterRegister[msg.sender].voted = true;
-            Vote memory v;
-            v.voterAddress = msg.sender;
-            v.choice = _choice;
-            if (_choice) {
-                // 如果选择是真的
-                countResult++;
-            }
-            votes[totalVote] = v;
+            ProposalVote memory pv;
+            pv.voteAddress = msg.sender;
+            pv.voteId = _proposalId;
+            voterProposal[_proposalId].push(pv);
+            countResult++;
             totalVote++;
             found = true;
         }
@@ -135,9 +148,25 @@ contract Voting is Initializable {
 
     function endVote() public inState(State.Voting) onlyOfficial {
         /// @notice 结束投票
-        /// @dev 只有在托管未开始时执行
+        /// @dev 只有在投票结束后执行
         state = State.Ended;
         finalResult = countResult;
+        for (uint8 i = 0; i < proposals.length; i++) {
+            if (winnerProposal.length == 0) {
+                winnerProposal.push(i);
+            }
+            if (
+                voterProposal[i].length <
+                voterProposal[winnerProposal[0]].length
+            ) {
+                winnerProposal = [i];
+            }
+            if (
+                voterProposal[i].length ==
+                voterProposal[winnerProposal[0]].length
+            ) {
+                winnerProposal.push(i);
+            }
+        }
     }
 }
-// memory
