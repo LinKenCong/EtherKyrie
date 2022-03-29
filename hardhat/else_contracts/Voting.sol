@@ -1,24 +1,26 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity ^0.8.7;
 
 contract Voting {
     // VARIABLES 变量声明
-    // 结构 投票
-    struct vote {
-        // 投票人 地址
-        address voterAddress;
-        // 投票人 选择
-        bool choice;
+    // 结构 提案
+    struct Proposal {
+        string proposalName;
+    }
+    // 结构 提案投票人
+    struct ProposalVote {
+        address voteAddress;
+        uint8 voteId;
     }
     // 结构 投票人
-    struct voter {
+    struct Voter {
         // 投票人 名称
         string voterName;
         // 投票人 选票（是否已投票）
         bool voted;
     }
     // 计算选票数量
-    uint256 private countResult = 0;
+    uint256 private _countResult = 0;
     // 最终投票数量
     uint256 public finalResult = 0;
     // 总投票人数
@@ -30,13 +32,14 @@ contract Voting {
     // 投票的官方名称
     string public ballotOfficialName;
     // 提案
-    string public proposal;
+    Proposal[] public proposals;
 
-    // 映射 投票权
-    mapping(uint256 => vote) private votes;
     // 映射 地址 选民
-    mapping(address => voter) public voterRegister;
-
+    mapping(address => Voter) private _voterRegister;
+    // 映射 地址 提案id=>投票人
+    mapping(uint8 => ProposalVote[]) private _voterProposal;
+    // 赢家
+    uint8[] public winnerProposal;
     // 创建枚举 状态{创建，投票，结束}
     enum State {
         Created,
@@ -66,14 +69,52 @@ contract Voting {
         _;
     }
 
+    modifier voteTrue() {
+        // 判断是否投过票
+        require(!_voterRegister[msg.sender].voted, "you have already voted.");
+        _;
+    }
+
+    modifier voterTrue() {
+        // 判断是否有权限的投票者
+        require(
+            bytes(_voterRegister[msg.sender].voterName).length != 0,
+            "You do not have permission."
+        );
+        _;
+    }
+
     // EVENTS 监听器
     // FUNCTIONS 方法函数
-    constructor(string memory _ballotOfficialName, string memory _proposal) {
+    // function __Voting_init(string memory _ballotOfficialName)
+    //     internal
+    //     onlyInitializing
+    // {
+    //     require(bytes(_ballotOfficialName).length != 0, "input is empty");
+    //     ballotOfficialAddress = msg.sender;
+    //     ballotOfficialName = _ballotOfficialName;
+
+    //     state = State.Created;
+    // }
+
+    constructor(string memory _ballotOfficialName) {
+        require(bytes(_ballotOfficialName).length != 0, "input is empty");
         ballotOfficialAddress = msg.sender;
         ballotOfficialName = _ballotOfficialName;
-        proposal = _proposal;
 
         state = State.Created;
+    }
+
+    function addProposal(string memory _proposalName)
+        public
+        inState(State.Created)
+        onlyOfficial
+    {
+        /// @notice 创建提案
+        /// @dev 只有在投票未开始时 只有官方 可执行
+        require(bytes(_proposalName).length != 0, "input is empty");
+        Proposal memory _newProposal = Proposal(_proposalName);
+        proposals.push(_newProposal);
     }
 
     function addVoter(address _voterAddress, string memory _voterName)
@@ -83,10 +124,12 @@ contract Voting {
     {
         /// @notice 创建选民
         /// @dev 只有在投票未开始时 只有官方 可执行
-        voter memory v;
-        v.voterName = _voterName;
-        v.voted = false;
-        voterRegister[_voterAddress] = v;
+        require(_voterAddress != address(0), "address is empty");
+        require(bytes(_voterName).length != 0, "input is empty");
+        Voter memory _v;
+        _v.voterName = _voterName;
+        _v.voted = false;
+        _voterRegister[_voterAddress] = _v;
         totalVoter++;
     }
 
@@ -96,40 +139,70 @@ contract Voting {
         state = State.Voting;
     }
 
-    function doVote(bool _choice)
+    function doVote(uint8 _proposalId)
         public
         inState(State.Voting)
+        voteTrue
+        voterTrue
         returns (bool voted)
     {
         /// @notice 投票
         /// @dev 只有在投票开始时执行
-        bool found = false;
+        require(_proposalId >= 0, "input is empty");
+        bool _found = false;
 
-        if (
-            bytes(voterRegister[msg.sender].voterName).length != 0 &&
-            !voterRegister[msg.sender].voted
-        ) {
-            // 如果 选民名称不为空 和 选民未投过票
-            voterRegister[msg.sender].voted = true;
-            vote memory v;
-            v.voterAddress = msg.sender;
-            v.choice = _choice;
-            if (_choice) {
-                // 如果选择是真的
-                countResult++;
-            }
-            votes[totalVote] = v;
-            totalVote++;
-            found = true;
-        }
-        return found;
+        // 如果 选民名称不为空
+        // 更改状态为已投票
+        _voterRegister[msg.sender].voted = true;
+        // 加入已被投票的提案
+        ProposalVote memory _pv;
+        _pv.voteAddress = msg.sender;
+        _pv.voteId = _proposalId;
+        _voterProposal[_proposalId].push(_pv);
+        // 投票数量增加
+        _countResult++;
+        // 投票人数增加
+        totalVote++;
+        _found = true;
+
+        return _found;
     }
 
     function endVote() public inState(State.Voting) onlyOfficial {
         /// @notice 结束投票
-        /// @dev 只有在托管未开始时执行
+        /// @dev 只有在投票结束后执行
+        // 状态为结束
         state = State.Ended;
-        finalResult = countResult;
+        // 最终投票数量显示
+        finalResult = _countResult;
+        for (uint8 i = 0; i < proposals.length; i++) {
+            if (winnerProposal.length == 0) {
+                // 如果没有赢家则加入
+                winnerProposal.push(i);
+            } else if (
+                _voterProposal[i].length <
+                _voterProposal[winnerProposal[0]].length
+            ) {
+                // 如果有更小的则变为最小的
+                winnerProposal = [i];
+            } else if (
+                _voterProposal[i].length ==
+                _voterProposal[winnerProposal[0]].length
+            ) {
+                // 如果有相同的则加入
+                winnerProposal.push(i);
+            }
+        }
+    }
+    function getTotalVote() internal view returns (uint256) {
+        return totalVoter;
+    }
+
+    function getTotalVoter() internal view returns (uint256) {
+        return totalVote;
+    }
+
+    function getFinalResult() internal view returns (uint256) {
+        return finalResult;
     }
 }
-// memory
