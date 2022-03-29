@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract Voting is Initializable {
+contract Voting is OwnableUpgradeable {
     // VARIABLES 变量声明
     // 结构 提案
     struct Proposal {
@@ -23,13 +23,11 @@ contract Voting is Initializable {
     // 计算选票数量
     uint256 private _countResult = 0;
     // 最终投票数量
-    uint256 public finalResult = 0;
+    uint256 private finalResult = 0;
     // 总投票人数
-    uint256 public totalVoter = 0;
+    uint256 private totalVoter = 0;
     // 总票数
-    uint256 public totalVote = 0;
-    // 投票的官方地址
-    address public ballotOfficialAddress;
+    uint256 private totalVote = 0;
     // 投票的官方名称
     string public ballotOfficialName;
     // 提案
@@ -54,14 +52,6 @@ contract Voting is Initializable {
     modifier condition(bool _condition) {
         // 只有条件为真时
         require(_condition);
-        _;
-    }
-    modifier onlyOfficial() {
-        // 只有官方
-        require(
-            msg.sender == ballotOfficialAddress,
-            "Only official can call this function."
-        );
         _;
     }
     modifier inState(State _state) {
@@ -92,7 +82,7 @@ contract Voting is Initializable {
         onlyInitializing
     {
         require(bytes(_ballotOfficialName).length != 0, "input is empty");
-        ballotOfficialAddress = msg.sender;
+        __Ownable_init();
         ballotOfficialName = _ballotOfficialName;
 
         state = State.Created;
@@ -109,7 +99,7 @@ contract Voting is Initializable {
     function addProposal(string memory _proposalName)
         public
         inState(State.Created)
-        onlyOfficial
+        onlyOwner
     {
         /// @notice 创建提案
         /// @dev 只有在投票未开始时 只有官方 可执行
@@ -121,7 +111,7 @@ contract Voting is Initializable {
     function addVoter(address _voterAddress, string memory _voterName)
         public
         inState(State.Created)
-        onlyOfficial
+        onlyOwner
     {
         /// @notice 创建选民
         /// @dev 只有在投票未开始时 只有官方 可执行
@@ -134,7 +124,7 @@ contract Voting is Initializable {
         totalVoter++;
     }
 
-    function startVote() public inState(State.Created) onlyOfficial {
+    function startVote() public inState(State.Created) onlyOwner {
         /// @notice 开始投票
         /// @dev 只有在投票未开始时 只有官方 可执行
         state = State.Voting;
@@ -169,7 +159,7 @@ contract Voting is Initializable {
         return _found;
     }
 
-    function endVote() public inState(State.Voting) onlyOfficial {
+    function endVote() internal inState(State.Voting) onlyOwner {
         /// @notice 结束投票
         /// @dev 只有在投票结束后执行
         // 状态为结束
@@ -194,5 +184,17 @@ contract Voting is Initializable {
                 winnerProposal.push(i);
             }
         }
+    }
+
+    function getTotalVote() public view returns (uint256) {
+        return totalVote;
+    }
+
+    function getTotalVoter() public view returns (uint256) {
+        return totalVoter;
+    }
+
+    function getFinalResult() public view returns (uint256) {
+        return finalResult;
     }
 }
