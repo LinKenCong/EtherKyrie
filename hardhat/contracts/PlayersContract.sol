@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.7;
 
 import "./Voting.sol";
 
@@ -17,7 +17,6 @@ contract PlayersContract is Voting {
     struct Player {
         address playerAddress;
         string name;
-        uint256 createdTime;
         Level playerLevel;
     }
 
@@ -25,10 +24,13 @@ contract PlayersContract is Voting {
     mapping(address => Player) public players;
 
     function __PlayersContract_init() internal onlyInitializing {
-        __Voting_init("ballotOfficialName", "proposal");
+        __Voting_init("ballotOfficialName");
     }
 
-    // function addPlayer() private {}
+    // function addPlayer() internal {
+    //     Player memory _newPlayer = Player();
+    //     players.push(_newPlayer);
+    // }
 
     // function getPlayer() public view {}
 
