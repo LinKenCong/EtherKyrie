@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract Voting is OwnableUpgradeable {
+import "./TopData.sol";
+
+contract Voting is TopData {
     // VARIABLES 变量声明
     // 结构 提案
     struct Proposal {
@@ -82,7 +83,6 @@ contract Voting is OwnableUpgradeable {
         onlyInitializing
     {
         require(bytes(_ballotOfficialName).length != 0, "input is empty");
-        __Ownable_init();
         ballotOfficialName = _ballotOfficialName;
 
         state = State.Created;
