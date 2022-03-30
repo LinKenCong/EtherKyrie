@@ -6,6 +6,10 @@ pragma solidity ^0.8.7;
 重写 投票合约，使其可多次使用投票
 ！未完成
 
+
+部分功能由前端执行。
+随机生成5个
+
  */
 
 contract SpecialChose {
@@ -18,7 +22,7 @@ contract SpecialChose {
         // 总选择人数
         uint256 totalVoter;
         // 投票对象
-        uint8[] voteSubjects;
+        mapping(uint8 => uint8) voteSubjects;
         // 玩家是否已投票
         address[] voters;
         // 赢家
