@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
+/**
+
+重写 投票合约，使其可多次使用投票
+！未完成
+
+ */
+
 contract SpecialChose {
     /** 
     结构
