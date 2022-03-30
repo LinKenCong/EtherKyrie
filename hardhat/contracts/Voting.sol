@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "./TopData.sol";
+import "./TopContract.sol";
 
-contract Voting is TopData {
+contract Voting is TopContract {
     // VARIABLES 变量声明
     // 结构 提案
     struct Proposal {

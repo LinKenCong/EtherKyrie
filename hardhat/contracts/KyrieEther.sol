@@ -7,7 +7,7 @@ contract KyrieEther is PlayersContract {
     uint256 public constant GOLD = 0;
 
     function initializeContract() public initializer {
-        __TopData_init();
+        __TopContract_init();
         __PlayersContract_init();
         // 初始为合约创建者铸造货币
         _mint(msg.sender, GOLD, 100 * 10**18, "");
