@@ -9,8 +9,8 @@
             Ether
             <span class="text-primary">Kyrie</span>
           </h1>
-          <div class="my-3">
-            <button type="button" class="btn btn-primary px-5 py-2">Primary</button>
+          <div class="my-5">
+            <button type="button" class="btn btn-primary px-5 py-2">Connect MetaMask</button>
           </div>
         </div>
       </section>

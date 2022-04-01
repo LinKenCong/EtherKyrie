@@ -3,25 +3,20 @@
   <section class="resume-section" id="about">
     <div class="resume-section-content">
       <h2 class="mb-0">
-        Clarence
-        <span class="text-primary">Taylor</span>
+        Is
+        <span class="text-primary">KenCong</span>
+        Lin
       </h2>
       <div class="subheading mb-5">
-        3542 Berry Street · Cheyenne Wells, CO 80810 · (317) 585-8468 ·
-        <a href="mailto:name@email.com">name@email.com</a>
+        My e-mail is
+        <a href="mailto:linkencong@foxmail.com">linkencong@foxmail.com</a>
       </div>
       <p class="lead mb-5">
-        I am experienced in leveraging agile frameworks to provide a robust
-        synopsis for high level overviews. Iterative approaches to corporate
-        strategy foster collaborative thinking to further the overall value
-        proposition.
+        My DAPP project, use ERC1155 TOKEN to trade and play games.
       </p>
-      <div class="social-icons">
-        <a class="social-icon" href="#!"><i class="fab fa-linkedin-in"></i></a>
-        <a class="social-icon" href="#!"><i class="fab fa-github"></i></a>
-        <a class="social-icon" href="#!"><i class="fab fa-twitter"></i></a>
-        <a class="social-icon" href="#!"><i class="fab fa-facebook-f"></i></a>
-      </div>
+      <p class="lead mb-5">
+        GITHUB:<a class="text-primary mx-3" href="https://github.com/LinKenCong/EtherKyrie">EtherKyrie</a>
+      </p>
     </div>
   </section>
 </template>

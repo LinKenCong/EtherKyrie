@@ -4,7 +4,7 @@
     class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top"
     id="sideNav"
   >
-    <a class="navbar-brand js-scroll-trigger" href="#page-top">
+    <nuxt-link class="navbar-brand js-scroll-trigger" to="/#page-top">
       <span class="d-block d-lg-none">EtherKyrie</span>
       <span class="d-none d-lg-block"
         ><img
@@ -12,7 +12,7 @@
           src="@/assets/img/money.png"
           alt="..."
       /></span>
-    </a>
+    </nuxt-link>
     <button
       class="navbar-toggler"
       type="button"
@@ -27,10 +27,14 @@
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#Game">Game</a>
+          <nuxt-link to="/#Game" class="nav-link js-scroll-trigger"
+            >Game</nuxt-link
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#about">About</a>
+          <nuxt-link to="/#about" class="nav-link js-scroll-trigger"
+            >About</nuxt-link
+          >
         </li>
       </ul>
     </div>
