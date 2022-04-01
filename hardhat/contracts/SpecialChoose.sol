@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
+import "./TopContract.sol";
 
 /**
 
@@ -10,7 +11,7 @@ pragma solidity ^0.8.7;
 
  */
 
-contract SpecialChose {
+contract SpecialChose is TopContract {
     /** 
     结构
     */
@@ -21,6 +22,8 @@ contract SpecialChose {
         uint256 totalVoters;
         // 总投票对象
         uint256 totalSubjects;
+        // 奖金池
+        uint256 coinPool;
         // 赢家地址列表
         uint256[] winChose;
         // 投票对象
@@ -70,7 +73,7 @@ contract SpecialChose {
     Function Init
     */
     /// @notice 本合约初始化
-    function __SpecialChose_init() internal {}
+    function __SpecialChose_init() internal onlyInitializing {}
 
     function newSCGame() public inState(State.Initial) {
         /// @notice 初始化本局游戏状态
@@ -155,14 +158,27 @@ contract SpecialChose {
 
     function doVote(uint256 _choseId) public inState(State.Voting) {
         /// @notice 支付游戏费用并添加玩家至游戏中
+        SpecialChoseRecord storage _newSCR = games[gamesNumber];
         // 玩家支付费用
+        safeTransferFrom(msg.sender, address(this), GOLD, 10000, "0x00");
+        _newSCR.coinPool = add(_newSCR.coinPool, 10000);
         // 添加玩家至游戏中
         addSCVoter(_choseId);
     }
 
     function payWinner() public inState(State.Ended) {
         /// @notice 奖励发放给玩家并且投票状态重置
+        SpecialChoseRecord storage _newSCR = games[gamesNumber];
         // 奖励发放
+        for (uint256 i = 0; i < _newSCR.winners.length; i++) {
+            safeTransferFrom(
+                address(this),
+                _newSCR.winners[i],
+                GOLD,
+                div(_newSCR.coinPool, _newSCR.winners.length),
+                "0x00"
+            );
+        }
         // 投票状态重置
         state = State.Initial;
     }
