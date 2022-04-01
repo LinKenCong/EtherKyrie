@@ -19,12 +19,16 @@ contract SpecialChose {
     /// @notice 结构 => 游戏记录
     /// @dev 单局游戏的记录结构(将会保存在mapping)
     struct SpecialChoseRecord {
-        // 总选择人数
-        uint256 totalVoter;
+        // 总投票玩家
+        uint256 totalVoters;
+        // 总投票对象
+        uint256 totalSubjects;
+        // 赢家地址列表
+        uint256[] winChose;
         // 投票对象
-        mapping(uint8 => uint8) voteSubjects;
-        // 玩家是否已投票
-        address[] voters;
+        mapping(uint256 => address[]) voteSubjects;
+        // 已投票玩家
+        mapping(address => bool) voters;
         // 赢家
         address[] winners;
     }
@@ -76,34 +80,61 @@ contract SpecialChose {
         state = State.Created;
         // 游戏局数增加
         gamesNumber++;
-        // 初始 投票对象 为一个且票数为 0
-        uint8[] memory _newVoteSubjects = new uint8[](1);
-        _newVoteSubjects[0] = 0;
-        // 初始 玩家 为一个 默认添加 游戏创建者
-        address[] memory _newVoters = new address[](1);
-        _newVoters[0] = msg.sender;
-        // 初始 赢家 为一个且地址为 空地址
-        address[] memory _newWinners = new address[](1);
-        _newWinners[0] = address(0);
-        // 数据加入结构
-        SpecialChoseRecord memory _newGames = SpecialChoseRecord(
-            1,
-            _newVoteSubjects,
-            _newVoters,
-            _newWinners
-        );
-        // 数据存入映射中
-        games[gamesNumber] = _newGames;
     }
 
     /** 
     Function Add
     */
-    function addSpecialChoseSubjects() public inState(State.Created) {}
+    function addSpecialChoseVoter(uint256 _choseNum)
+        public
+        inState(State.Created)
+    {
+        /// @notice 玩家选择投票即添加进游戏记录内
+        // 获取合约储存的数据
+        SpecialChoseRecord storage _newSCR = games[gamesNumber];
+        require(_newSCR.voters[msg.sender] == false, "");
+        // 将投票的玩家添加进 已投票玩家列表
+        _newSCR.totalVoters++;
+        _newSCR.voters[msg.sender] = true;
+        // 将投票的玩家添加进 投票对象下的玩家列表
+        _newSCR.voteSubjects[_choseNum].push(msg.sender);
+    }
 
-    function addSpecialChoseVoter() public inState(State.Created) {}
+    function addSpecialChoseWinner() internal inState(State.Ended) {
+        /// @notice 获取赢家地址列表
+        SpecialChoseRecord storage _newSCR = games[gamesNumber];
 
-    function addSpecialChoseWinner() public inState(State.Created) {}
+        for (uint256 i = 0; i < _newSCR.totalVoters; i++) {
+            // 遍历所有投票对象，若最小或相同则存入赢家对象数组
+            if (_newSCR.winChose.length == 0) {
+                // 如果没有赢家则加入
+                _newSCR.winChose.push(i);
+            } else if (
+                _newSCR.voteSubjects[i].length <
+                _newSCR.voteSubjects[_newSCR.winChose[0]].length
+            ) {
+                // 如果有更小的则变为最小的
+                _newSCR.winChose = [i];
+            } else if (
+                _newSCR.voteSubjects[i].length ==
+                _newSCR.voteSubjects[_newSCR.winChose[0]].length
+            ) {
+                // 如果有相同的则加入
+                _newSCR.winChose.push(i);
+            }
+        }
+
+        if (_newSCR.winChose.length > 0) {
+            // 遍历赢家对象编号获得玩家地址并储存
+            for (uint256 it = 0; it < _newSCR.winChose.length; it++) {
+                for (uint256 i = 0; i < _newSCR.voteSubjects[_newSCR.winChose[it]].length; i++) {
+                    _newSCR.winners.push(
+                        _newSCR.voteSubjects[_newSCR.winChose[it]][i]
+                    );
+                }
+            }
+        }
+    }
 
     /** 
     Function Set
@@ -116,8 +147,18 @@ contract SpecialChose {
     function setSpecialChoseEnd() public inState(State.Voting) {
         /// @notice 结束游戏
         state = State.Ended;
+        addSpecialChoseWinner();
     }
+
     /** 
     Function Get
     */
+    function getSpecialChoseWinner(uint256 _gamesNumber)
+        public
+        view
+        returns (address[] memory)
+    {
+        SpecialChoseRecord storage _newSCR = games[_gamesNumber];
+        return _newSCR.winners;
+    }
 }
