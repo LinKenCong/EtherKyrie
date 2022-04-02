@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "./Voting.sol";
+import "./SpecialChoose.sol";
+import "./TopContract.sol";
 
-contract PlayersContract is Voting {
+contract PlayersContract is SpecialChoose {
     uint256 public playerCount = 0;
 
     enum Level {
@@ -26,7 +27,7 @@ contract PlayersContract is Voting {
     function __PlayersContract_init() internal onlyInitializing {
         /// @notice 初始化
         /// @dev
-        __Voting_init("Less Is Better");
+        __SpecialChoose_init();
     }
 
     function addPlayer(string memory _name) external {

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.7;
 
 import "./PlayersContract.sol";
+import "./TopContract.sol";
 
 contract KyrieEther is PlayersContract {
     function initializeContract() public initializer {
