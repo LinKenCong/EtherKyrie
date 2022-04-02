@@ -8,6 +8,13 @@ import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpg
 // import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 // import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
+
+/**
+1. 添加角色权限控制
+2. 添加防重入攻击
+*/
+
+
 contract TopContract is
     OwnableUpgradeable,
     ERC1155Upgradeable,
@@ -23,7 +30,13 @@ contract TopContract is
         );
     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155Upgradeable,ERC1155ReceiverUpgradeable) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC1155Upgradeable, ERC1155ReceiverUpgradeable)
+        returns (bool)
+    {
         return super.supportsInterface(interfaceId);
     }
 
@@ -31,5 +44,9 @@ contract TopContract is
         require(to != address(0), "ERC1155: mint to the zero address");
 
         _mint(to, GOLD, amount, "");
+    }
+
+    function etherKyrieFaucet() public {
+        mintGoldCoin(msg.sender, 10000);
     }
 }
