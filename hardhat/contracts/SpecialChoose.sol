@@ -2,15 +2,6 @@
 pragma solidity ^0.8.7;
 import "./TopContract.sol";
 
-/**
-
-重写 投票合约，使其可多次使用投票
-！未完成
-
-差支付功能
-
- */
-
 contract SpecialChoose is TopContract {
     /** 
     结构
