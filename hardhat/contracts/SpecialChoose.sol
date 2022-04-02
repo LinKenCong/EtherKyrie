@@ -25,7 +25,6 @@ contract SpecialChoose is TopContract {
         mapping(uint256 => address[]) voteSubjectsFrom;
         // 已投票玩家
         mapping(address => bool) voters;
-        State state;
     }
     /** 
     枚举
@@ -171,6 +170,7 @@ contract SpecialChoose is TopContract {
                 "0x00"
             );
         }
+        state = State.Initial;
     }
 
     /** 
