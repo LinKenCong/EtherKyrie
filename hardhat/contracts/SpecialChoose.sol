@@ -11,13 +11,13 @@ import "./TopContract.sol";
 
  */
 
-contract SpecialChose is TopContract {
+contract SpecialChoose is TopContract {
     /** 
     结构
     */
     /// @notice 结构 => 游戏记录
     /// @dev 单局游戏的记录结构(将会保存在mapping)
-    struct SpecialChoseRecord {
+    struct SpecialChooseRecord {
         // 总投票玩家
         uint256 totalVoters;
         // 总投票对象
@@ -34,6 +34,7 @@ contract SpecialChose is TopContract {
         mapping(uint256 => address[]) voteSubjectsFrom;
         // 已投票玩家
         mapping(address => bool) voters;
+        State state;
     }
     /** 
     枚举
@@ -48,7 +49,7 @@ contract SpecialChose is TopContract {
     /** 
     映射
     */
-    mapping(uint256 => SpecialChoseRecord) internal games;
+    mapping(uint256 => SpecialChooseRecord) internal games;
     /** 
     变量
     */
@@ -73,7 +74,7 @@ contract SpecialChose is TopContract {
     Function Init
     */
     /// @notice 本合约初始化
-    function __SpecialChose_init() internal onlyInitializing {}
+    function __SpecialChoose_init() internal onlyInitializing {}
 
     function newSCGame() public inState(State.Initial) {
         /// @notice 初始化本局游戏状态
@@ -87,7 +88,7 @@ contract SpecialChose is TopContract {
     function addSCVoter(uint256 _choseId) internal inState(State.Voting) {
         /// @notice 玩家选择投票即添加进游戏记录内
         // 获取合约储存的数据
-        SpecialChoseRecord storage _newSCR = games[gamesNumber];
+        SpecialChooseRecord storage _newSCR = games[gamesNumber];
         require(_newSCR.voters[msg.sender] == false, "You have already voted.");
         // 将投票的玩家添加进 已投票玩家列表
         _newSCR.totalVoters++;
@@ -102,7 +103,7 @@ contract SpecialChose is TopContract {
 
     function addSCWinner() internal inState(State.Ended) {
         /// @notice 获取赢家地址列表
-        SpecialChoseRecord storage _newSCR = games[gamesNumber];
+        SpecialChooseRecord storage _newSCR = games[gamesNumber];
 
         for (uint256 i = 0; i < _newSCR.totalSubjects; i++) {
             // 遍历所有投票对象，若最小或相同则存入赢家对象数组
@@ -154,33 +155,31 @@ contract SpecialChose is TopContract {
         /// @notice 结束游戏
         state = State.Ended;
         addSCWinner();
-    }
+    }   
 
     function doVote(uint256 _choseId) public inState(State.Voting) {
         /// @notice 支付游戏费用并添加玩家至游戏中
-        SpecialChoseRecord storage _newSCR = games[gamesNumber];
+        SpecialChooseRecord storage _newSCR = games[gamesNumber];
         // 玩家支付费用
         safeTransferFrom(msg.sender, address(this), GOLD, 10000, "0x00");
-        _newSCR.coinPool = add(_newSCR.coinPool, 10000);
+        _newSCR.coinPool = SafeMathUpgradeable.add(_newSCR.coinPool, 10000);
         // 添加玩家至游戏中
         addSCVoter(_choseId);
     }
 
     function payWinner() public inState(State.Ended) {
         /// @notice 奖励发放给玩家并且投票状态重置
-        SpecialChoseRecord storage _newSCR = games[gamesNumber];
+        SpecialChooseRecord storage _newSCR = games[gamesNumber];
         // 奖励发放
         for (uint256 i = 0; i < _newSCR.winners.length; i++) {
-            safeTransferFrom(
+            _safeTransferFrom(
                 address(this),
                 _newSCR.winners[i],
                 GOLD,
-                div(_newSCR.coinPool, _newSCR.winners.length),
+                SafeMathUpgradeable.div(_newSCR.coinPool, _newSCR.winners.length),
                 "0x00"
             );
         }
-        // 投票状态重置
-        state = State.Initial;
     }
 
     /** 
@@ -192,7 +191,7 @@ contract SpecialChose is TopContract {
         returns (uint256[] memory)
     {
         /// @notice 获取胜利对象
-        SpecialChoseRecord storage _newSCR = games[_gamesNumber];
+        SpecialChooseRecord storage _newSCR = games[_gamesNumber];
         return _newSCR.winChose;
     }
 
@@ -202,7 +201,7 @@ contract SpecialChose is TopContract {
         returns (address[] memory)
     {
         /// @notice 获取所有胜利玩家的地址
-        SpecialChoseRecord storage _newSCR = games[_gamesNumber];
+        SpecialChooseRecord storage _newSCR = games[_gamesNumber];
         return _newSCR.winners;
     }
 }
