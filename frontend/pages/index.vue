@@ -40,7 +40,7 @@
                       <input
                         type="text"
                         class="form-control"
-                        v-bind="transferAccount"
+                        v-model="transferAccount"
                       />
                     </div>
                     <div class="col-auto">
@@ -55,7 +55,7 @@
                       <input
                         type="text"
                         class="form-control"
-                        v-bind="transferAmount"
+                        v-model="transferAmount"
                       />
                     </div>
                     <div class="col-auto">
@@ -92,6 +92,7 @@
 import Vue from 'vue'
 import { mapMutations } from 'vuex'
 import { ethers } from 'ethers'
+import { isAddress } from '@ethersproject/address'
 
 export default Vue.extend({
   name: 'IndexPage',
@@ -102,12 +103,12 @@ export default Vue.extend({
   },
   data() {
     return {
-      account: null,
+      account: '',
       balance: null,
       signer: null,
       busd: null,
-      transferAccount: null,
-      transferAmount: null,
+      transferAccount: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+      transferAmount: 5000,
     }
   },
   mounted() {
@@ -188,7 +189,7 @@ export default Vue.extend({
       await this.getBalance()
     },
     async transferGold() {
-      if (this.transferAccount == '') return
+      if (!this.transferAccount) return
       this.busd != null || (await this.connectContract())
       let tx: any = await this.busd.safeTransferFrom(
         this.account,
