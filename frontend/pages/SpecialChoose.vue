@@ -42,7 +42,11 @@
                   >Ether: 100 => Address</a
                 >
               </div>
-              <button type="button" class="btn btn-primary px-5 py-2">
+              <button
+                type="button"
+                class="btn btn-primary px-5 py-2"
+                @click="clickTest"
+              >
                 Confirm Vote
               </button>
             </div>
@@ -55,8 +59,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { connectETH, transferGold } from '../utils/ethersApi'
 
 export default Vue.extend({
   name: 'SpecialChoose',
+  methods: {
+    async clickTest() {
+      const res = await transferGold(
+        '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+        5000
+      )
+      console.log(res)
+    },
+  },
 })
 </script>
