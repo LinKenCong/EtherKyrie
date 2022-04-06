@@ -41,6 +41,13 @@
                 >
                   End Game
                 </button>
+                <button
+                  type="button"
+                  class="btn btn-success px-5 py-2"
+                  @click="getFaucet"
+                >
+                  Gold Faucet
+                </button>
               </div>
             </div>
           </div>
@@ -99,7 +106,7 @@
 import Vue from 'vue'
 import {
   connectETH,
-  transferGold,
+  EtherKyrieFaucet,
   SpecialChooseNew,
   SpecialChooseStart,
   SpecialChooseDoVote,
@@ -145,6 +152,11 @@ export default Vue.extend({
     },
     async voteSubmit() {
       const res = await SpecialChooseDoVote(this.choose)
+      await this.connect()
+      console.log(res)
+    },
+    async getFaucet() {
+      const res = await EtherKyrieFaucet()
       await this.connect()
       console.log(res)
     },

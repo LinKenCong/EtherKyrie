@@ -110,4 +110,11 @@ const SpecialChooseDoVote = async (voteNum: number) => {
     return { req: res.transactionHash }
 }
 
-export { connectETH, transferGold, SpecialChooseNew, SpecialChooseStart, SpecialChooseDoVote, SpecialChooseEnd }
+const EtherKyrieFaucet = async () => {
+    contractWithSigner || await connectETH()
+    let tx = await contractWithSigner.etherKyrieFaucet()
+    const res = await tx.wait(1)
+    return { req: res.transactionHash }
+}
+
+export { connectETH, transferGold, EtherKyrieFaucet, SpecialChooseNew, SpecialChooseStart, SpecialChooseDoVote, SpecialChooseEnd }
