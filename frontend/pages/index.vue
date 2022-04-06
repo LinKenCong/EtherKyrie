@@ -33,33 +33,31 @@
               <div class="card my-5">
                 <div class="card-body">
                   <div class="row g-3 align-items-center mb-2">
-                    <div class="col-auto">
-                      <label class="col-form-label">Address</label>
-                    </div>
-                    <div class="col-auto">
+                    <div
+                      class="input-group mb-2 col-auto"
+                    >
+                      <span class="input-group-text">Address</span>
                       <input
                         type="text"
                         class="form-control"
+                        aria-label="transferAccount"
                         v-model="transferAccount"
                       />
-                    </div>
-                    <div class="col-auto">
-                      <span class="form-text"> Transfer Address </span>
+                      <span class="input-group-text">Transfer Address</span>
                     </div>
                   </div>
                   <div class="row g-3 align-items-center mb-2">
-                    <div class="col-auto">
-                      <label class="col-form-label">Amount</label>
-                    </div>
-                    <div class="col-auto">
+                    <div
+                      class="input-group mb-2 col-auto"
+                    >
+                      <span class="input-group-text">$</span>
                       <input
                         type="text"
                         class="form-control"
+                        aria-label="Amount (to the nearest dollar)"
                         v-model="transferAmount"
                       />
-                    </div>
-                    <div class="col-auto">
-                      <span class="form-text"> Transfer Gold Amount </span>
+                      <span class="input-group-text">Transfer Gold Amount</span>
                     </div>
                   </div>
                   <div class="mb-2" v-if="transferAmount">

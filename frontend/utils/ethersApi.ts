@@ -80,5 +80,34 @@ const transferGold = async (transferAccount: string, transferAmount: number) => 
     await connectETH()
     return { transactionHash: res.transactionHash }
 }
+const SpecialChooseNew = async () => {
+    contractWithSigner || await connectETH()
+    let tx = await contractWithSigner.newSCGame()
+    const res = await tx.wait(1)
+    return { req: res.transactionHash }
+}
 
-export { connectETH, transferGold }
+const SpecialChooseStart = async () => {
+    contractWithSigner || await connectETH()
+    let tx = await contractWithSigner.setSCStart()
+    const res = await tx.wait(1)
+    return { req: res.transactionHash }
+}
+
+const SpecialChooseEnd = async () => {
+    contractWithSigner || await connectETH()
+    let tx1 = await contractWithSigner.setSCEnd()
+    await tx1.wait(1)
+    let tx2 = await contractWithSigner.payWinner()
+    const res = await tx2.wait(1)
+    return { req: res.transactionHash }
+}
+
+const SpecialChooseDoVote = async (voteNum: number) => {
+    contractWithSigner || await connectETH()
+    let tx = await contractWithSigner.doVote(voteNum)
+    const res = await tx.wait(1)
+    return { req: res.transactionHash }
+}
+
+export { connectETH, transferGold, SpecialChooseNew, SpecialChooseStart, SpecialChooseDoVote, SpecialChooseEnd }

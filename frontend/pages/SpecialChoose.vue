@@ -3,54 +3,92 @@
     <NavMain />
     <!-- Page Content-->
     <main class="container-fluid p-0">
-      <section class="p-3" id="page-top">
-        <div class="mb-3">
-          <div class="list-group">
-            <a
-              href="#"
-              class="list-group-item list-group-item-action"
-              v-for="(item, index) in 5"
+      <section class="resume-section" v-if="account">
+        <div class="resume-section-content">
+          <div class="row row-cols-1 row-cols-md-2 g-4 mb-3">
+            <div
+              class="col"
+              v-for="(item, index) in 4"
               :key="index"
-              >Start Game</a
+              @click="userChoose(index)"
             >
-          </div>
-        </div>
-        <div class="row row-cols-1 row-cols-md-2 g-4 mb-3">
-          <div class="col" v-for="(item, index) in 4" :key="index">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">
-                  This is a longer card with supporting text below as a natural
-                  lead-in to additional content. This content is a little bit
-                  longer.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="mb-3">
-          <div class="card">
-            <div class="card-header">Featured</div>
-            <div class="card-body">
-              <div class="list-group mb-3">
-                <a
-                  href="#"
-                  class="list-group-item list-group-item-action"
-                  v-for="(item, index) in 5"
-                  :key="index"
-                  >Ether: 100 => Address</a
+              <div class="card">
+                <div
+                  :class="[
+                    choose == index ? 'btn-success card-body' : 'card-body',
+                  ]"
                 >
+                  <h3 class="card-title text-center">{{ index + 1 }}</h3>
+                </div>
               </div>
-              <button
-                type="button"
-                class="btn btn-primary px-5 py-2"
-                @click="clickTest"
-              >
-                Confirm Vote
-              </button>
             </div>
           </div>
+          <div class="mb-3">
+            <div class="card">
+              <div class="card-header">SpecialChoose Console</div>
+              <div class="card-body">
+                <button
+                  type="button"
+                  class="btn btn-warning px-5 py-2"
+                  @click="startGame"
+                >
+                  Start Game
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-danger px-5 py-2"
+                  @click="endGame"
+                >
+                  End Game
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="card">
+              <div class="card-header">SpecialChoose Vote</div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <ul class="mb-3">
+                    <li>
+                      Account: <span class="text-primary">{{ account }}</span>
+                    </li>
+                    <li>
+                      Gold Balance:
+                      <span class="text-primary">{{ balance }}</span>
+                    </li>
+                    <li>
+                      Your Choose:
+                      <span class="text-primary">{{ choose + 1 }}</span>
+                    </li>
+                    <li>Will Cost Gold : 10000</li>
+                  </ul>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-primary px-5 py-2"
+                  @click="voteSubmit"
+                >
+                  Confirm Vote
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="resume-section" v-if="!account">
+        <div class="resume-section-content">
+          <h1 class="mb-5">
+            You need to connect to
+            <span class="text-warning">MetaMask</span>
+          </h1>
+          <button
+            type="button"
+            class="btn btn-primary px-5 py-2"
+            @click="connect"
+          >
+            Connect MetaMask
+          </button>
         </div>
       </section>
     </main>
@@ -59,16 +97,55 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { connectETH, transferGold } from '../utils/ethersApi'
+import {
+  connectETH,
+  transferGold,
+  SpecialChooseNew,
+  SpecialChooseStart,
+  SpecialChooseDoVote,
+  SpecialChooseEnd,
+} from '../utils/ethersApi'
 
 export default Vue.extend({
   name: 'SpecialChoose',
+  computed: {
+    StoreData() {
+      return this.$store.state
+    },
+  },
+  data() {
+    return {
+      account: '',
+      balance: '',
+      choose: 0,
+    }
+  },
+  mounted() {
+    this.account = this.StoreData.account
+  },
   methods: {
-    async clickTest() {
-      const res = await transferGold(
-        '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
-        5000
-      )
+    userChoose(key: number) {
+      this.choose = key
+    },
+    async connect() {
+      const res = await connectETH()
+      this.account = res.account
+      this.balance = res.balance
+      return res.balance
+    },
+    async startGame() {
+      await SpecialChooseNew()
+      const res = await SpecialChooseStart()
+      console.log(res)
+    },
+    async endGame() {
+      const res = await SpecialChooseEnd()
+      await this.connect()
+      console.log(res)
+    },
+    async voteSubmit() {
+      const res = await SpecialChooseDoVote(this.choose)
+      await this.connect()
       console.log(res)
     },
   },
