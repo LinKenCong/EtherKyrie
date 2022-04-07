@@ -135,10 +135,13 @@ export default Vue.extend({
       this.choose = key
     },
     async connect() {
-      const res = await connectETH()
-      this.account = res.account
-      this.balance = res.balance
-      return res.balance
+      await connectETH().then((res) => {
+        if (res.state == 0) {
+          this.account = res.data.account
+          this.balance = res.data.balance
+          return res.data.balance
+        }
+      })
     },
     async startGame() {
       await SpecialChooseNew()

@@ -33,9 +33,7 @@
               <div class="card my-5">
                 <div class="card-body">
                   <div class="row g-3 align-items-center mb-2">
-                    <div
-                      class="input-group mb-2 col-auto"
-                    >
+                    <div class="input-group mb-2 col-auto">
                       <span class="input-group-text">Address</span>
                       <input
                         type="text"
@@ -47,9 +45,7 @@
                     </div>
                   </div>
                   <div class="row g-3 align-items-center mb-2">
-                    <div
-                      class="input-group mb-2 col-auto"
-                    >
+                    <div class="input-group mb-2 col-auto">
                       <span class="input-group-text">$</span>
                       <input
                         type="text"
@@ -122,14 +118,20 @@ export default Vue.extend({
       setAccount: 'setAccount',
     }),
     async connect() {
-      const res = await connectETH()
-      this.setAccount(res.account)
-      this.account = res.account
-      this.balance = res.balance
+      await connectETH().then((res) => {
+        if (res.state == 0) {
+          this.setAccount(res.data.account)
+          this.account = res.data.account
+          this.balance = res.data.balance
+        } else {
+          alert(res.errmsg)
+        }
+        console.log(res)
+      })
     },
     async transferGold() {
       const res = await transferGold(this.transferAccount, this.transferAmount)
-      this.transactionHash = res.transactionHash
+      this.transactionHash = res.data.transactionHash
     },
   },
 })
