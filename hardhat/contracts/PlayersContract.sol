@@ -35,7 +35,9 @@ contract PlayersContract is SpecialChoose {
         /// @dev 只有外部可调用，只能注册自己的游戏账户
         require(msg.sender != address(0), "address is empty");
         require(bytes(_name).length != 0, "name is empty");
-
+        // 添加角色控制
+        _setupRole(PLAYER_ROLE, msg.sender);
+        // 添加进玩家列表
         players[msg.sender] = Player(msg.sender, _name, Level.Rookie);
         playerCount++;
     }
@@ -64,7 +66,11 @@ contract PlayersContract is SpecialChoose {
 
     // function winner() private {}
 
-    function getPlayerInfo(address _address) public view returns (Player memory) {
+    function getPlayerInfo(address _address)
+        public
+        view
+        returns (Player memory)
+    {
         /// @notice 获取玩家信息
         /// @dev
         return players[_address];
