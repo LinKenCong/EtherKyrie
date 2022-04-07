@@ -9,7 +9,7 @@ describe("测试脚本 test/index.ts ", function () {
   const DEV_DATA = {
     "deploy_net": "http://localhost:8545",
     "abi_path": "contract_abi/KyrieEther.json",
-    "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    "contract_address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
     "private_key_0": "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
     "private_key_1": "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d",
   }
@@ -74,12 +74,10 @@ describe("测试脚本 test/index.ts ", function () {
     expect(BigNumber.from(await contract.balanceOf(addr2.address, 0)).toNumber()).to.equal(5000);
   });
 
-  it("投票人数为1", async function () {
-    const tx = await DevContract.addVoter(addr1.address, "voter1");
-    await tx.wait(1);
-    // console.log("tx->", tx);
-    console.log("getTotalVoter->", BigNumber.from(await DevContract.getTotalVoter()).toNumber());
-    expect(BigNumber.from(await DevContract.getTotalVoter()).toNumber()).to.equal(1);
+  it("Upgrade Test", async function () {
+    // expect(BigNumber.from(await this.contract.balanceOf(owner.address, 0)).toString()).to.equal(100 * 10 ** 18);
+    const tx = await DevContract.getTest2();
+    console.log(tx)
   });
 
 });

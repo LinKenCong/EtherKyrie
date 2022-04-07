@@ -5,7 +5,7 @@ import "./SpecialChoose.sol";
 import "./TopContract.sol";
 
 contract PlayersContract is SpecialChoose {
-    uint256 public playerCount = 0;
+    uint256 public playerCount;
 
     enum Level {
         Rookie,
