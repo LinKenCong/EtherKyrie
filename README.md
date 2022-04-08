@@ -2,6 +2,14 @@
 
 我的以太坊 DAPP 游戏项目，使用了 ERC1155 作为游戏货币，目前有投票功能的游戏，使用游戏货币可参与，可赢得奖金。
 
+## Project Use
+
+Solidity; Hardhat; Ethers.js; Nuxt.js(Vue); TypeScript; Bootstrap;
+
+OpenZeppelin: ERC1155; ERC1155Holder; UpgradeableContracts; AccessControl; SafeMath; Ownable;
+
+## Project Show
+
 前端 效果展示：
 
 ![avatar](https://github.com/LinKenCong/EtherKyrie/blob/main/frontend/assets/img/Frontend-Page_Home.png)
@@ -10,7 +18,7 @@
 
 ![avatar](https://github.com/LinKenCong/EtherKyrie/blob/main/frontend/assets/img/Frontend-Page_Home_M.png)
 
-## Run
+## Project Run
 
 运行命令启动前端 如：
 
