@@ -22,7 +22,7 @@
     "hh-dev-l": "cd ./hardhat && yarn hardhat run --network localhost scripts/deploy_upgradeable_KyrieEther.ts && cd ..",
     "hh-clear": "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi && cd ..",
     "hh-test": "cd ./hardhat && yarn hardhat test && cd ..",
-    "hh-dev": "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi && yarn hardhat compile && yarn hardhat run --network localhost scripts/deploy.ts && cd .."
+    "hh-dev": "cd ./hardhat && yarn hardhat clean && yarn hardhat clear-abi && yarn hardhat compile && yarn hardhat run --network localhost scripts/deploy_upgradeable_KyrieEther.ts && cd .."
   },
   "keywords": [
     "ethers",
