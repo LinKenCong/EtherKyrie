@@ -58,6 +58,55 @@ let contractWithSigner: Contract
 let account: string
 let balance: string
 
+const checkErrorMsg = (errmsg: string) => {
+    let errmsgTextArr = [
+        'User rejected the request.',
+        'The current game state cannot perform this operation',
+        'missing role',
+        'You have already voted.',
+        'is empty',
+        'User denied transaction signature.'
+    ]
+    let req = 'EtherKyrie Error'
+    errmsgTextArr.forEach(item => {
+        if (errmsg.indexOf(item) != -1) {
+            req = reqErrorMsg(item)
+        }
+    });
+    return req
+}
+
+const reqErrorMsg = (errmsg: string) => {
+    let req = ''
+    switch (errmsg) {
+        case 'User rejected the request.':
+            req = 'MateMask rejected the request.'
+            break;
+        case 'The current game state cannot perform this operation.':
+            req = 'The current game state cannot perform this operation.'
+            break;
+        case 'missing role':
+            req = 'Your role does not have permissions.'
+            break;
+        case 'You have already voted.':
+            req = 'You have already voted.'
+            break;
+        case 'is empty':
+            req = 'Please enter the correct.'
+            break;
+        case 'User denied transaction signature':
+            req = 'User denied transaction signature.'
+            break;
+        default:
+            req = errmsg
+            break;
+    }
+    return req
+}
+
+/**
+ * API
+ */
 const connectETH = async () => {
 
     let result = {
@@ -92,9 +141,10 @@ const connectETH = async () => {
         result.data.balance = balance
         return result
     } catch (error: any) {
-        result.errmsg = 'Connect Error.'
-        if (error.message == 'User rejected the request.') {
-            result.errmsg = 'MateMask rejected the request.'
+        if (error.data) {
+            result.errmsg = checkErrorMsg(error.data.message)
+        } else {
+            result.errmsg = checkErrorMsg(error.message)
         }
         console.error(result.errmsg)
         return result
@@ -121,20 +171,24 @@ const transferGold = async (transferAccount: string, transferAmount: number) => 
         result.state = 0
         result.data.transactionHash = res.transactionHash
         return result
-    } catch (error) {
-        result.errmsg = 'Transfer Error.'
+    } catch (error:any) {
+        if (error.data) {
+            result.errmsg = checkErrorMsg(error.data.message)
+        } else {
+            result.errmsg = checkErrorMsg(error.message)
+        }
         console.error(result.errmsg)
         return result
     }
 }
 const SpecialChooseNew = async () => {
+    contractWithSigner || await connectETH()
     let result = {
         state: 1000,
         errmsg: '',
         data: { transactionHash: '' }
     }
     try {
-        contractWithSigner || await connectETH()
         let tx = await contractWithSigner.newSCGame()
         const res = await tx.wait(1)
         result.state = 0
@@ -142,10 +196,10 @@ const SpecialChooseNew = async () => {
         return result
     } catch (error: any) {
         result.errmsg = 'Game New Error.'
-        if (error.data.message.indexOf('The current game state cannot perform this operation') != -1) {
-            result.errmsg = 'The current game state cannot perform this operation.'
-        } else if (error.data.message.indexOf('missing role') != -1) {
-            result.errmsg = 'Your role does not have permissions.'
+        if (error.data) {
+            result.errmsg = checkErrorMsg(error.data.message)
+        } else {
+            result.errmsg = checkErrorMsg(error.message)
         }
         console.error(result.errmsg)
         return result
@@ -153,24 +207,23 @@ const SpecialChooseNew = async () => {
 }
 
 const SpecialChooseStart = async () => {
+    contractWithSigner || await connectETH()
     let result = {
         state: 1000,
         errmsg: '',
         data: { transactionHash: '' }
     }
     try {
-        contractWithSigner || await connectETH()
         let tx = await contractWithSigner.setSCStart()
         const res = await tx.wait(1)
         result.state = 0
         result.data.transactionHash = res.transactionHash
         return result
     } catch (error: any) {
-        result.errmsg = 'Game Start Error.'
-        if (error.data.message.indexOf('The current game state cannot perform this operation') != -1) {
-            result.errmsg = 'The current game state cannot perform this operation.'
-        } else if (error.data.message.indexOf('missing role') != -1) {
-            result.errmsg = 'Your role does not have permissions.'
+        if (error.data) {
+            result.errmsg = checkErrorMsg(error.data.message)
+        } else {
+            result.errmsg = checkErrorMsg(error.message)
         }
         console.error(result.errmsg)
         return result
@@ -178,13 +231,13 @@ const SpecialChooseStart = async () => {
 }
 
 const SpecialChooseEnd = async () => {
+    contractWithSigner || await connectETH()
     let result = {
         state: 1000,
         errmsg: '',
         data: { transactionHash: '' }
     }
     try {
-        contractWithSigner || await connectETH()
         let tx1 = await contractWithSigner.setSCEnd()
         await tx1.wait(1)
         let tx2 = await contractWithSigner.payWinner()
@@ -193,11 +246,10 @@ const SpecialChooseEnd = async () => {
         result.data.transactionHash = res.transactionHash
         return result
     } catch (error: any) {
-        result.errmsg = 'Game End Error.'
-        if (error.data.message.indexOf('The current game state cannot perform this operation') != -1) {
-            result.errmsg = 'The current game state cannot perform this operation.'
-        } else if (error.data.message.indexOf('missing role') != -1) {
-            result.errmsg = 'Your role does not have permissions.'
+        if (error.data) {
+            result.errmsg = checkErrorMsg(error.data.message)
+        } else {
+            result.errmsg = checkErrorMsg(error.message)
         }
         console.error(result.errmsg)
         return result
@@ -205,26 +257,23 @@ const SpecialChooseEnd = async () => {
 }
 
 const SpecialChooseDoVote = async (voteNum: number) => {
+    contractWithSigner || await connectETH()
     let result = {
         state: 1000,
         errmsg: '',
         data: { transactionHash: '' }
     }
     try {
-        contractWithSigner || await connectETH()
         let tx = await contractWithSigner.doVote(voteNum)
         const res = await tx.wait(1)
         result.state = 0
         result.data.transactionHash = res.transactionHash
         return result
     } catch (error: any) {
-        result.errmsg = 'DoVote Error.'
-        if (error.data.message.indexOf('The current game state cannot perform this operation') != -1) {
-            result.errmsg = 'The current game state cannot perform this operation.'
-        } else if (error.data.message.indexOf('missing role') != -1) {
-            result.errmsg = 'Your role does not have permissions.'
-        } else if (error.data.message.indexOf('You have already voted.') != -1) {
-            result.errmsg = 'You have already voted.'
+        if (error.data) {
+            result.errmsg = checkErrorMsg(error.data.message)
+        } else {
+            result.errmsg = checkErrorMsg(error.message)
         }
         console.error(result.errmsg)
         return result
@@ -232,20 +281,24 @@ const SpecialChooseDoVote = async (voteNum: number) => {
 }
 
 const EtherKyrieFaucet = async () => {
+    contractWithSigner || await connectETH()
     let result = {
         state: 1000,
         errmsg: '',
         data: { transactionHash: '' }
     }
     try {
-        contractWithSigner || await connectETH()
         let tx = await contractWithSigner.etherKyrieFaucet()
         const res = await tx.wait(1)
         result.state = 0
         result.data.transactionHash = res.transactionHash
         return result
-    } catch (error) {
-        result.errmsg = 'Faucet Error.'
+    } catch (error:any) {
+        if (error.data) {
+            result.errmsg = checkErrorMsg(error.data.message)
+        } else {
+            result.errmsg = checkErrorMsg(error.message)
+        }
         console.error(result.errmsg)
         return result
     }
@@ -265,9 +318,10 @@ const addGamePlayer = async (name: string) => {
         result.data.transactionHash = res.transactionHash
         return result
     } catch (error: any) {
-        result.errmsg = 'addGamePlayer Error.'
-        if (error.data.message.indexOf('name is empty') != -1) {
-            result.errmsg = 'Please enter the correct name.'
+        if (error.data) {
+            result.errmsg = checkErrorMsg(error.data.message)
+        } else {
+            result.errmsg = checkErrorMsg(error.message)
         }
         console.error(result.errmsg)
         return result
@@ -292,10 +346,13 @@ const getPlayerInfo = async () => {
             result.data.PlayerName = res[1]
             result.data.PlayerLevel = Level[res[2]]
         }
-        console.log(res)
         return result
     } catch (error: any) {
-        result.errmsg = 'getPlayerInfo Error.'
+        if (error.data) {
+            result.errmsg = checkErrorMsg(error.data.message)
+        } else {
+            result.errmsg = checkErrorMsg(error.message)
+        }
         console.error(result.errmsg)
         return result
     }
