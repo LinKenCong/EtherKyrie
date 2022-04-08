@@ -80,7 +80,13 @@
         </div>
       </section>
       <hr class="m-0" />
-      <HomeGame />
+      <HomeGame v-if="account" />
+      <section class="resume-section" id="Game" v-else>
+        <div class="resume-section-content">
+          <h2 class="mb-5">Game</h2>
+          <h3 class="text-primary">YOU NEED TO CONNECT TO METAMASK</h3>
+        </div>
+      </section>
       <hr class="m-0" />
       <HomeAbout />
     </main>
@@ -111,7 +117,7 @@ export default Vue.extend({
   },
   mounted() {
     this.account = this.StoreData.account
-     if (this.account) {
+    if (this.account) {
       this.connect()
     }
   },

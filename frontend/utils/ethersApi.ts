@@ -45,6 +45,7 @@ const CONTRACT_DATA = {
         "function setApprovalForAll(address,bool)",
         "function setSCEnd()",
         "function setSCStart()",
+        "function state() view returns (uint8)",
         "function supportsInterface(bytes4) view returns (bool)",
         "function transferOwnership(address)",
         "function uri(uint256) view returns (string)"
@@ -139,8 +140,13 @@ const SpecialChooseNew = async () => {
         result.state = 0
         result.data.transactionHash = res.transactionHash
         return result
-    } catch (error) {
+    } catch (error: any) {
         result.errmsg = 'Game New Error.'
+        if (error.data.message.indexOf('The current game state cannot perform this operation') != -1) {
+            result.errmsg = 'The current game state cannot perform this operation.'
+        } else if (error.data.message.indexOf('missing role') != -1) {
+            result.errmsg = 'Your role does not have permissions.'
+        }
         console.error(result.errmsg)
         return result
     }
@@ -163,6 +169,8 @@ const SpecialChooseStart = async () => {
         result.errmsg = 'Game Start Error.'
         if (error.data.message.indexOf('The current game state cannot perform this operation') != -1) {
             result.errmsg = 'The current game state cannot perform this operation.'
+        } else if (error.data.message.indexOf('missing role') != -1) {
+            result.errmsg = 'Your role does not have permissions.'
         }
         console.error(result.errmsg)
         return result
@@ -188,6 +196,8 @@ const SpecialChooseEnd = async () => {
         result.errmsg = 'Game End Error.'
         if (error.data.message.indexOf('The current game state cannot perform this operation') != -1) {
             result.errmsg = 'The current game state cannot perform this operation.'
+        } else if (error.data.message.indexOf('missing role') != -1) {
+            result.errmsg = 'Your role does not have permissions.'
         }
         console.error(result.errmsg)
         return result
@@ -207,8 +217,15 @@ const SpecialChooseDoVote = async (voteNum: number) => {
         result.state = 0
         result.data.transactionHash = res.transactionHash
         return result
-    } catch (error) {
+    } catch (error: any) {
         result.errmsg = 'DoVote Error.'
+        if (error.data.message.indexOf('The current game state cannot perform this operation') != -1) {
+            result.errmsg = 'The current game state cannot perform this operation.'
+        } else if (error.data.message.indexOf('missing role') != -1) {
+            result.errmsg = 'Your role does not have permissions.'
+        } else if (error.data.message.indexOf('You have already voted.') != -1) {
+            result.errmsg = 'You have already voted.'
+        }
         console.error(result.errmsg)
         return result
     }
@@ -234,4 +251,54 @@ const EtherKyrieFaucet = async () => {
     }
 }
 
-export { connectETH, transferGold, EtherKyrieFaucet, SpecialChooseNew, SpecialChooseStart, SpecialChooseDoVote, SpecialChooseEnd }
+const addGamePlayer = async (name: string) => {
+    contractWithSigner || await connectETH()
+    let result = {
+        state: 1000,
+        errmsg: '',
+        data: { transactionHash: '' }
+    }
+    try {
+        let tx = await contractWithSigner.addPlayer(name)
+        const res = await tx.wait(1)
+        result.state = 0
+        result.data.transactionHash = res.transactionHash
+        return result
+    } catch (error: any) {
+        result.errmsg = 'addGamePlayer Error.'
+        if (error.data.message.indexOf('name is empty') != -1) {
+            result.errmsg = 'Please enter the correct name.'
+        }
+        console.error(result.errmsg)
+        return result
+    }
+}
+
+const getPlayerInfo = async () => {
+    contractWithSigner || await connectETH()
+    const Level = ['Rookie', 'Elementary', 'Intermediate', 'Advanced', 'Master']
+    let result = {
+        state: 1000,
+        errmsg: '',
+        data: { PlayerName: '', PlayerLevel: '' }
+    }
+    try {
+        let res = await contractWithSigner.getPlayerInfo(account)
+        if (!res[1]) {
+            result.state = 1000
+            result.errmsg = 'You are not a player.'
+        } else {
+            result.state = 0
+            result.data.PlayerName = res[1]
+            result.data.PlayerLevel = Level[res[2]]
+        }
+        console.log(res)
+        return result
+    } catch (error: any) {
+        result.errmsg = 'getPlayerInfo Error.'
+        console.error(result.errmsg)
+        return result
+    }
+}
+
+export { connectETH, transferGold, EtherKyrieFaucet, SpecialChooseNew, SpecialChooseStart, SpecialChooseDoVote, SpecialChooseEnd, addGamePlayer, getPlayerInfo }

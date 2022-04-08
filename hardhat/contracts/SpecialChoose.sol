@@ -46,7 +46,7 @@ contract SpecialChoose is TopContract {
     // 当前游戏局数
     uint256 public gamesNumber;
     // 当前状态
-    State private state;
+    State public state;
 
     /** 
     修饰器
@@ -66,16 +66,10 @@ contract SpecialChoose is TopContract {
     /// @notice 本合约初始化
     function __SpecialChoose_init() internal onlyInitializing {}
 
-    function newSCGame() public inState(State.Initial) {
-        /// @notice 初始化本局游戏状态
-        // 游戏状态为“创建”阶段
-        state = State.Created;
-    }
-
     /** 
     Function Add
     */
-    function addSCVoter(uint256 _choseId) internal inState(State.Voting) {
+    function _addSCVoter(uint256 _choseId) internal inState(State.Voting) {
         /// @notice 玩家选择投票即添加进游戏记录内
         // 获取合约储存的数据
         SpecialChooseRecord storage _newSCR = games[gamesNumber];
@@ -91,7 +85,7 @@ contract SpecialChoose is TopContract {
         _newSCR.voteSubjectsFrom[_choseId].push(msg.sender);
     }
 
-    function addSCWinner() internal inState(State.Ended) {
+    function _addSCWinner() internal inState(State.Ended) {
         /// @notice 获取赢家地址列表
         SpecialChooseRecord storage _newSCR = games[gamesNumber];
 
@@ -134,30 +128,40 @@ contract SpecialChoose is TopContract {
     /** 
     Function Set
     */
-    function setSCStart() public inState(State.Created) {
+    function newSCGame() public onlyRole(PLAYER_ROLE) inState(State.Initial){
+        /// @notice 初始化本局游戏状态
+        // 游戏状态为“创建”阶段
+        state = State.Created;
+    }
+
+    function setSCStart() public onlyRole(PLAYER_ROLE) inState(State.Created) {
         /// @notice 开始游戏
         state = State.Voting;
         // 游戏局数增加
         gamesNumber++;
     }
 
-    function setSCEnd() public inState(State.Voting) {
+    function setSCEnd() public onlyRole(PLAYER_ROLE) inState(State.Voting) {
         /// @notice 结束游戏
         state = State.Ended;
-        addSCWinner();
-    }   
+        _addSCWinner();
+    }
 
-    function doVote(uint256 _choseId) public inState(State.Voting) {
+    function doVote(uint256 _choseId)
+        public
+        onlyRole(PLAYER_ROLE)
+        inState(State.Voting)
+    {
         /// @notice 支付游戏费用并添加玩家至游戏中
         SpecialChooseRecord storage _newSCR = games[gamesNumber];
         // 玩家支付费用
         safeTransferFrom(msg.sender, address(this), GOLD, 10000, "0x00");
         _newSCR.coinPool = SafeMathUpgradeable.add(_newSCR.coinPool, 10000);
         // 添加玩家至游戏中
-        addSCVoter(_choseId);
+        _addSCVoter(_choseId);
     }
 
-    function payWinner() public inState(State.Ended) {
+    function payWinner() public onlyRole(PLAYER_ROLE) inState(State.Ended) {
         /// @notice 奖励发放给玩家并且投票状态重置
         SpecialChooseRecord storage _newSCR = games[gamesNumber];
         // 奖励发放
@@ -166,7 +170,10 @@ contract SpecialChoose is TopContract {
                 address(this),
                 _newSCR.winners[i],
                 GOLD,
-                SafeMathUpgradeable.div(_newSCR.coinPool, _newSCR.winners.length),
+                SafeMathUpgradeable.div(
+                    _newSCR.coinPool,
+                    _newSCR.winners.length
+                ),
                 "0x00"
             );
         }
