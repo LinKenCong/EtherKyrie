@@ -129,6 +129,9 @@ export default Vue.extend({
   },
   mounted() {
     this.account = this.StoreData.account
+    if (this.account) {
+      this.connect()
+    }
   },
   methods: {
     userChoose(key: number) {
@@ -140,28 +143,59 @@ export default Vue.extend({
           this.account = res.data.account
           this.balance = res.data.balance
           return res.data.balance
+        } else {
+          alert(res.errmsg)
         }
       })
     },
     async startGame() {
-      await SpecialChooseNew()
-      const res = await SpecialChooseStart()
-      console.log(res)
+      let state = true
+      await SpecialChooseNew().then((res) => {
+        if (res.state == 0) {
+          console.log(res.data.transactionHash)
+        } else {
+          alert(res.errmsg)
+          state = false
+        }
+      })
+      if (!state) return
+      await SpecialChooseStart().then((req) => {
+        if (req.state == 0) {
+          console.log(req.data.transactionHash)
+        } else {
+          alert(req.errmsg)
+        }
+      })
     },
     async endGame() {
-      const res = await SpecialChooseEnd()
+      await SpecialChooseEnd().then((res) => {
+        if (res.state == 0) {
+          console.log(res.data.transactionHash)
+        } else {
+          alert(res.errmsg)
+        }
+      })
       await this.connect()
-      console.log(res)
     },
     async voteSubmit() {
-      const res = await SpecialChooseDoVote(this.choose)
+      await SpecialChooseDoVote(this.choose).then((res) => {
+        if (res.state == 0) {
+          console.log(res.data.transactionHash)
+        } else {
+          alert(res.errmsg)
+        }
+      })
       await this.connect()
-      console.log(res)
     },
     async getFaucet() {
-      const res = await EtherKyrieFaucet()
+      await EtherKyrieFaucet().then((res) => {
+        if (res.state == 0) {
+          console.log(res.data.transactionHash)
+        } else {
+          alert(res.errmsg)
+        }
+      })
       await this.connect()
-      console.log(res)
     },
   },
 })

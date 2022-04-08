@@ -107,7 +107,6 @@ const transferGold = async (transferAccount: string, transferAmount: number) => 
         errmsg: '',
         data: { transactionHash: '' }
     }
-
     try {
         let tx = await contractWithSigner.safeTransferFrom(
             account,
@@ -128,40 +127,111 @@ const transferGold = async (transferAccount: string, transferAmount: number) => 
     }
 }
 const SpecialChooseNew = async () => {
-    contractWithSigner || await connectETH()
-    let tx = await contractWithSigner.newSCGame()
-    const res = await tx.wait(1)
-    return { req: res.transactionHash }
+    let result = {
+        state: 1000,
+        errmsg: '',
+        data: { transactionHash: '' }
+    }
+    try {
+        contractWithSigner || await connectETH()
+        let tx = await contractWithSigner.newSCGame()
+        const res = await tx.wait(1)
+        result.state = 0
+        result.data.transactionHash = res.transactionHash
+        return result
+    } catch (error) {
+        result.errmsg = 'Game New Error.'
+        console.error(result.errmsg)
+        return result
+    }
 }
 
 const SpecialChooseStart = async () => {
-    contractWithSigner || await connectETH()
-    let tx = await contractWithSigner.setSCStart()
-    const res = await tx.wait(1)
-    return { req: res.transactionHash }
+    let result = {
+        state: 1000,
+        errmsg: '',
+        data: { transactionHash: '' }
+    }
+    try {
+        contractWithSigner || await connectETH()
+        let tx = await contractWithSigner.setSCStart()
+        const res = await tx.wait(1)
+        result.state = 0
+        result.data.transactionHash = res.transactionHash
+        return result
+    } catch (error: any) {
+        result.errmsg = 'Game Start Error.'
+        if (error.data.message.indexOf('The current game state cannot perform this operation') != -1) {
+            result.errmsg = 'The current game state cannot perform this operation.'
+        }
+        console.error(result.errmsg)
+        return result
+    }
 }
 
 const SpecialChooseEnd = async () => {
-    contractWithSigner || await connectETH()
-    let tx1 = await contractWithSigner.setSCEnd()
-    await tx1.wait(1)
-    let tx2 = await contractWithSigner.payWinner()
-    const res = await tx2.wait(1)
-    return { req: res.transactionHash }
+    let result = {
+        state: 1000,
+        errmsg: '',
+        data: { transactionHash: '' }
+    }
+    try {
+        contractWithSigner || await connectETH()
+        let tx1 = await contractWithSigner.setSCEnd()
+        await tx1.wait(1)
+        let tx2 = await contractWithSigner.payWinner()
+        const res = await tx2.wait(1)
+        result.state = 0
+        result.data.transactionHash = res.transactionHash
+        return result
+    } catch (error: any) {
+        result.errmsg = 'Game End Error.'
+        if (error.data.message.indexOf('The current game state cannot perform this operation') != -1) {
+            result.errmsg = 'The current game state cannot perform this operation.'
+        }
+        console.error(result.errmsg)
+        return result
+    }
 }
 
 const SpecialChooseDoVote = async (voteNum: number) => {
-    contractWithSigner || await connectETH()
-    let tx = await contractWithSigner.doVote(voteNum)
-    const res = await tx.wait(1)
-    return { req: res.transactionHash }
+    let result = {
+        state: 1000,
+        errmsg: '',
+        data: { transactionHash: '' }
+    }
+    try {
+        contractWithSigner || await connectETH()
+        let tx = await contractWithSigner.doVote(voteNum)
+        const res = await tx.wait(1)
+        result.state = 0
+        result.data.transactionHash = res.transactionHash
+        return result
+    } catch (error) {
+        result.errmsg = 'DoVote Error.'
+        console.error(result.errmsg)
+        return result
+    }
 }
 
 const EtherKyrieFaucet = async () => {
-    contractWithSigner || await connectETH()
-    let tx = await contractWithSigner.etherKyrieFaucet()
-    const res = await tx.wait(1)
-    return { req: res.transactionHash }
+    let result = {
+        state: 1000,
+        errmsg: '',
+        data: { transactionHash: '' }
+    }
+    try {
+        contractWithSigner || await connectETH()
+        let tx = await contractWithSigner.etherKyrieFaucet()
+        const res = await tx.wait(1)
+        result.state = 0
+        result.data.transactionHash = res.transactionHash
+        return result
+    } catch (error) {
+        result.errmsg = 'Faucet Error.'
+        console.error(result.errmsg)
+        return result
+    }
 }
 
 export { connectETH, transferGold, EtherKyrieFaucet, SpecialChooseNew, SpecialChooseStart, SpecialChooseDoVote, SpecialChooseEnd }

@@ -111,10 +111,12 @@ export default Vue.extend({
   },
   mounted() {
     this.account = this.StoreData.account
+     if (this.account) {
+      this.connect()
+    }
   },
   methods: {
     ...mapMutations({
-      increment: 'increment',
       setAccount: 'setAccount',
     }),
     async connect() {
@@ -126,12 +128,18 @@ export default Vue.extend({
         } else {
           alert(res.errmsg)
         }
-        console.log(res)
       })
     },
     async transferGold() {
-      const res = await transferGold(this.transferAccount, this.transferAmount)
-      this.transactionHash = res.data.transactionHash
+      await transferGold(this.transferAccount, this.transferAmount).then(
+        (res) => {
+          if (res.state == 0) {
+            this.transactionHash = res.data.transactionHash
+          } else {
+            alert(res.errmsg)
+          }
+        }
+      )
     },
   },
 })
