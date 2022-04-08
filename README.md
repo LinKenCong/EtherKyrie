@@ -14,10 +14,6 @@ OpenZeppelin: ERC1155; ERC1155Holder; UpgradeableContracts; AccessControl; SafeM
 
 ![avatar](https://github.com/LinKenCong/EtherKyrie/blob/main/frontend/assets/img/Frontend-Page_Home.png)
 
-前端手机端 效果展示：
-
-![avatar](https://github.com/LinKenCong/EtherKyrie/blob/main/frontend/assets/img/Frontend-Page_Home_M.png)
-
 ## Project Run
 
 运行命令启动前端 如：
