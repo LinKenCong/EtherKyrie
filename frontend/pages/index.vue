@@ -80,7 +80,7 @@
         </div>
       </section>
       <hr class="m-0" />
-      <HomeGame v-if="account" />
+      <HomeGame v-if="account" :userAccount="account" />
       <section class="resume-section" id="Game" v-else>
         <div class="resume-section-content">
           <h2 class="mb-5">Game</h2>

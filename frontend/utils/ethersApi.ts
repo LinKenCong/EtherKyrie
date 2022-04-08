@@ -65,7 +65,8 @@ const checkErrorMsg = (errmsg: string) => {
         'missing role',
         'You have already voted.',
         'is empty',
-        'User denied transaction signature.'
+        'User denied transaction signature.',
+        'insufficient balance for transfer'
     ]
     let req = 'EtherKyrie Error'
     errmsgTextArr.forEach(item => {
@@ -96,6 +97,9 @@ const reqErrorMsg = (errmsg: string) => {
             break;
         case 'User denied transaction signature':
             req = 'User denied transaction signature.'
+            break;
+        case 'insufficient balance for transfer':
+            req = 'insufficient balance for transfer.'
             break;
         default:
             req = errmsg
@@ -171,7 +175,7 @@ const transferGold = async (transferAccount: string, transferAmount: number) => 
         result.state = 0
         result.data.transactionHash = res.transactionHash
         return result
-    } catch (error:any) {
+    } catch (error: any) {
         if (error.data) {
             result.errmsg = checkErrorMsg(error.data.message)
         } else {
@@ -293,7 +297,7 @@ const EtherKyrieFaucet = async () => {
         result.state = 0
         result.data.transactionHash = res.transactionHash
         return result
-    } catch (error:any) {
+    } catch (error: any) {
         if (error.data) {
             result.errmsg = checkErrorMsg(error.data.message)
         } else {

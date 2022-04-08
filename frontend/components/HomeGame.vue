@@ -69,6 +69,7 @@
 import { addGamePlayer, getPlayerInfo, connectETH } from '../utils/ethersApi'
 export default {
   name: 'HomeGame',
+  props: ['userAccount'],
   data() {
     return {
       account: '',
@@ -80,7 +81,10 @@ export default {
     }
   },
   mounted() {
-    this.getPlayerInfo()
+    this.account = this.userAccount
+    if (this.account) {
+      this.getPlayerInfo()
+    } 
   },
   methods: {
     async connect() {
@@ -115,6 +119,7 @@ export default {
           alert(res.errmsg)
         }
       })
+      this.getPlayerInfo()
     },
   },
 }

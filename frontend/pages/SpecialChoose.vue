@@ -29,17 +29,24 @@
               <div class="card-body">
                 <button
                   type="button"
+                  class="btn btn-info px-5 py-2"
+                  @click="newGame"
+                >
+                  1.New Game
+                </button>
+                <button
+                  type="button"
                   class="btn btn-warning px-5 py-2"
                   @click="startGame"
                 >
-                  Start Game
+                  2.Start Game
                 </button>
                 <button
                   type="button"
                   class="btn btn-danger px-5 py-2"
                   @click="endGame"
                 >
-                  End Game
+                  4.End Game
                 </button>
                 <button
                   type="button"
@@ -76,7 +83,7 @@
                   class="btn btn-primary px-5 py-2"
                   @click="voteSubmit"
                 >
-                  Confirm Vote
+                  3.Confirm Vote
                 </button>
               </div>
             </div>
@@ -148,22 +155,21 @@ export default Vue.extend({
         }
       })
     },
-    async startGame() {
-      let state = true
+    async newGame() {
       await SpecialChooseNew().then((res) => {
         if (res.state == 0) {
           console.log(res.data.transactionHash)
         } else {
           alert(res.errmsg)
-          state = false
         }
       })
-      if (!state) return
-      await SpecialChooseStart().then((req) => {
-        if (req.state == 0) {
-          console.log(req.data.transactionHash)
+    },
+    async startGame() {
+      await SpecialChooseStart().then((res) => {
+        if (res.state == 0) {
+          console.log(res.data.transactionHash)
         } else {
-          alert(req.errmsg)
+          alert(res.errmsg)
         }
       })
     },
