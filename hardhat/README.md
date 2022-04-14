@@ -42,3 +42,9 @@ yarn hardhat export-abi
 yarn hardhat clear-abi
 yarn hardhat export-abi --no-compile
 ```
+
+# Optimize problem records
+
+```shell
+Warning: Contract code size is 24987 bytes and exceeds 24576 bytes (a limit introduced in Spurious Dragon). This contract may not be deployable on mainnet. Consider enabling the optimizer (with a low "runs" value!), turning off revert strings, or using libraries.
+```
